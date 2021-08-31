@@ -1,15 +1,17 @@
 # Import utils
+import random
 from utils.file import read_file, write_file
 from utils.string import extract_alphabet, parse_n_char
 
 # Import Algorithm
-from cipher.vigenere import encrypt, decrypt
+from cipher.vigenere import Vigenere
+from cipher.full_vigenere import FullVigenere
+from cipher.autokey_vigenere import AutokeyVigenere
 
-data = read_file('test.txt')
-extracted = extract_alphabet(data)
+data = input("Masukkan data: ")
+key = input("Masukkan kunci: ")
 
-enc = encrypt(extracted)
-print(enc)
-
-dec = decrypt(enc)
-print(dec)
+cipher = AutokeyVigenere(extract_alphabet(data), key)
+# decryption = cipher.decrypt()
+print(f'Encrypt: {cipher.encrypt()}')
+print(f'Decrypt: {cipher.decrypt()}')

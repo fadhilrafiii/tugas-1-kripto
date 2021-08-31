@@ -1,10 +1,12 @@
+import random
 from collections import defaultdict
 
-class Vigenere:
+
+class FullVigenere:
   def __init__(self, data, key):
     self.data =  data
     self.key = key
-    self.table = [chr(i) for i in range(ord('a'),ord('z') + 1)]
+    self.table = bytearray(random.sample(range(97, 123), 26)).decode('utf-8')
 
   def generate_keystream(self):
     key_stream = ''
@@ -14,10 +16,10 @@ class Vigenere:
     return key_stream
 
   def encrypt_val(self, origin, key):
-    return self.table[(ord(origin) + ord(key) - 194) % 26]
+    return self.table[(self.table.index(origin) + self.table.index(key)) % 26]
   
   def decrypt_val(self, value, key):
-    return self.table[(ord(value) - ord(key)) % 26]
+    return self.table[(self.table.index(value) - self.table.index(key)) % 26]
 
   def encrypt(self):
     key_stream = self.generate_keystream()
@@ -38,3 +40,4 @@ class Vigenere:
     
     self.data = decrypted
     return self.data
+

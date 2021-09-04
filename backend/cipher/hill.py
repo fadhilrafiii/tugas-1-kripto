@@ -8,6 +8,7 @@ class Hill:
     self.inverse_key = [[0 for i in range(self.m)] for j in range(self.m)]
 
     self.set_inverse_key()
+    print(len(self.data), '==========PRINT=============')
   
   def get_inverse_mod(self, val):
     for x in range(1, 26):
@@ -65,8 +66,8 @@ class Hill:
     added_data = self.data
     if (remain != 0):
       for i in range(remain):
-        added_data += 'x'
-    
+        added_data += 'z'
+
     formatted = ''
     for i in range(len(added_data)):
       formatted += added_data[i]
@@ -88,7 +89,7 @@ class Hill:
         encrypted_mgram[i] = chr(encrypted_mgram[i] % 26 + 97)
         i += 1
         j = 0
-        
+      
     return ''.join(encrypted_mgram)
 
   def encrypt(self):
@@ -98,7 +99,7 @@ class Hill:
     for i in range(len(formatted_data)):
       encrypted += self.crypt_mgram(formatted_data[i], self.key)
 
-    self.data = encrypted[0 : self.length_data - 1]
+    self.data = encrypted[0 : self.length_data]
     return self.data
 
   def decrypt(self):
@@ -108,24 +109,8 @@ class Hill:
     for i in range(len(formatted_data)):
       decrypted += self.crypt_mgram(formatted_data[i], self.inverse_key)
 
-    self.data = decrypted[0 : self.length_data - 1]
+    self.data = decrypted[0 : self.length_data]
     return self.data
-
-
-
-
-
-    
-
-data = 'paymoremoneyy'
-key = [
-  [17, 17, 5],
-  [21, 18, 21],
-  [2, 2, 19]
-]
-a  = Hill(data, key, 3)
-print(a.encrypt())
-print(a.decrypt())
 
 
   

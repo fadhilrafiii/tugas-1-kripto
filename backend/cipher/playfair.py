@@ -65,6 +65,10 @@ class Playfair:
 
   def encrypt(self):
     arr_bigram = self.data.split(' ')
+
+    if (len(self.data) % 2 == 0):
+      arr_bigram = arr_bigram[:len(arr_bigram)-1]
+
     arr_encrypted = []
     for bigram in arr_bigram:
       i1, j1 = self.find_pos(bigram[0])

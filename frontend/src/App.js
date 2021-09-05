@@ -68,6 +68,10 @@ function App() {
 
   const handleCipherChange = (e) => {
     setCipher(e.target.value);
+
+    if (e.target.value === 3) {
+      setData((prev) => file.header + prev);
+    }
   };
 
   const handleChangeNum = (e) => {
@@ -123,12 +127,16 @@ function App() {
 
   const handleInputFile = (e) => {
     setFile(e.target.files[0]);
-    const reader = new FileReader()
-    reader.onload = async (e) => { 
-      const text = (e.target.result)
-      setData(text);
-    };
-    reader.readAsText(e.target.files[0])
+    if (e.target.files.length) {
+      const reader = new FileReader()
+
+      reader.onload = async (e) => { 
+        const text = (e.target.result)
+        console.log(text);
+        setData(text);
+      };
+      reader.readAsText(e.target.files[0])
+    }
   }
 
   const  downloadTxtFile = () => {
@@ -177,8 +185,6 @@ function App() {
     }
   }, [m, b]);
 
-  console.log(file)
-
   return (
     <Grid item container className="App">
       {(Boolean(successMessage) || Boolean(errorMessage)) && (
@@ -206,7 +212,7 @@ function App() {
               </h3>
               <input
                 valu={file}
-                accept="text/plain"
+                accept="text/plain images/*"
                 style={{ display: 'none' }}
                 id="raised-button-file"
                 multiple
@@ -230,7 +236,7 @@ function App() {
               maxRows={10}
               autoFocus
             />
-            {file?.name && <div class="error mb">{`You uploaded ${file.name}!`}</div>}
+            {file?.name && <div className="error mb">{`You uploaded ${file.name}!`}</div>}
           </Grid>
           <Grid item container lg={2} className="swap-btn">
             <IconButton onClick={handleSwap}>

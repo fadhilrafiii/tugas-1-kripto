@@ -20,7 +20,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/', methods=['POST'])
 def index():
-  # try:
+  try:
     method = request.args.get('method')
     cipher = int(request.args.get('cipher'))
     payload = request.json
@@ -60,11 +60,10 @@ def index():
       return jsonify({ 'result': result, 'usedKey': a.key_stream })
     if (cipher == 2):
       return jsonify({ 'result': result, 'conversion': a.conversion })
-      
 
     return jsonify({ 'result': result })
-  # except Exception as err:
-  #   return jsonify({ 'error': str(repr(err))}), 400
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
 
 if __name__ == '__main__':
   app.run(debug = True)

@@ -5,13 +5,20 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "is-coprime": "^1.0.0",
+    "m": "^1.6.0",
+    "ndarray-determinant": "^1.0.0",
+    "ndarray-pack": "^1.2.1",
     "node-sass": "^4.14.1",
+    "querystring": "^0.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "underscore-matrix": "^0.1.0",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

@@ -68,10 +68,6 @@ function App() {
 
   const handleCipherChange = (e) => {
     setCipher(e.target.value);
-
-    if (e.target.value === 3) {
-      setData((prev) => file.header + prev);
-    }
   };
 
   const handleChangeNum = (e) => {
@@ -126,12 +122,20 @@ function App() {
   }
 
   const handleInputFile = (e) => {
-    setFile(e.target.files[0]);
     if (e.target.files.length) {
+      setFile(e.target.files[0]);
+      const formatFile = e.target.files[0].name.slice(-4);
+
       const reader = new FileReader()
 
       reader.onload = async (e) => { 
-        const text = (e.target.result)
+        let text = (e.target.result)
+
+        if (formatFile !== '.txt') {
+          text = btoa(unescape(encodeURIComponent(text)));
+        console.log(text);
+
+        }
         console.log(text);
         setData(text);
       };
@@ -212,7 +216,7 @@ function App() {
               </h3>
               <input
                 valu={file}
-                accept="text/plain images/*"
+                accept={cipher === 3 ? '' : "text/plain"}
                 style={{ display: 'none' }}
                 id="raised-button-file"
                 multiple
@@ -260,6 +264,7 @@ function App() {
           </Grid>
         </Grid>
         <Grid item container direction="column" className="submit-section">
+          {cipher === 3 && <div className="mb error">Now you can upload other than .txt files</div>}
           <FormControl variant="filled" className="dropdown">
             <InputLabel id="demo-simple-select-filled-label">Cipher Algorithm</InputLabel>
             <Select

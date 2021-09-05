@@ -30,25 +30,26 @@ class Playfair:
         i += 1
 
   def format_data(self):
-    for i in range(len(self.data)):
-      if (self.data[i] == 'j'):
-        self.data[i] = 'i'
-
     formatted = ''
     # Bigram musn't have same char
     i = 0
     while (i < len(self.data)):
       formatted += self.data[i]
       
-      if (i == len(self.data) - 1):
+      if (i == len(self.data) - 1 and len(formatted.split(' ').pop()) % 2 == 1):
         formatted += 'x'
       elif (self.data[i] == self.data[i + 1]):
         formatted += 'x'
         formatted += ' '
         i -= 1
       else:
-        formatted += self.data[i+1]
-        formatted += ' '
+        if (self.data[i + 1] != 'j'):
+          formatted += self.data[i+1]
+        else:
+          formatted += 'i'
+
+        if (i != len(self.data) - 2):
+          formatted += ' '
 
       i += 2
 
@@ -65,10 +66,7 @@ class Playfair:
 
   def encrypt(self):
     arr_bigram = self.data.split(' ')
-
-    if (len(self.data) % 2 == 0):
-      arr_bigram = arr_bigram[:len(arr_bigram)-1]
-
+    print(arr_bigram)
     arr_encrypted = []
     for bigram in arr_bigram:
       i1, j1 = self.find_pos(bigram[0])
@@ -85,7 +83,10 @@ class Playfair:
     return self.data
 
   def decrypt(self):
-    arr_bigram = [self.data[i : i + 2] for i in range(0, len(self.data), 2)]
+    arr_bigram =  arr_bigram = self.data.split(' ')
+
+    print(arr_bigram, 'BIGRAM')
+    print('=========================================')
     arr_decrypted = []
     for bigram in arr_bigram:
       i1, j1 = self.find_pos(bigram[0])

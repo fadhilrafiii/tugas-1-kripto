@@ -2,15 +2,17 @@ import random
 from collections import defaultdict
 
 class Vigenere:
-  def __init__(self, data, key, variant = 'standard'):
+  def __init__(self, data, key, variant = 'standard', usedKey = '', conversion = ''):
     self.variant = variant
     self.data =  data
     self.key = key
-    self.key_stream = ''
-    self.conversion = ''
+    self.key_stream = usedKey
+    self.conversion = conversion
 
-    self.generate_keystream()
-    self.generate_conversion()
+    if (usedKey == ''):
+      self.generate_keystream()
+    if (conversion == ''):
+      self.generate_conversion()
 
   def generate_conversion(self):
     if (self.variant == 'full'):

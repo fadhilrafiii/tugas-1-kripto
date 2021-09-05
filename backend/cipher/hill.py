@@ -8,7 +8,6 @@ class Hill:
     self.inverse_key = [[0 for i in range(self.m)] for j in range(self.m)]
 
     self.set_inverse_key()
-    print(len(self.data), '==========PRINT=============')
   
   def get_inverse_mod(self, val):
     for x in range(1, 26):
@@ -36,6 +35,7 @@ class Hill:
 
   def get_matrix_inverse(self, matrix):
     determinant = 1 / self.get_inverse_mod(self.determinant(matrix))
+
     # For 2x2 Matrix
     if len(matrix) == 2:
       return [[matrix[1][1] / determinant % 26, -1 * matrix[0][1] / determinant % 26] , 

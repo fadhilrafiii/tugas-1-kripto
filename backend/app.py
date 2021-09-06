@@ -20,12 +20,12 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/', methods=['POST'])
 def index():
-  try:
+  # try:
     method = request.args.get('method')
     cipher = int(request.args.get('cipher'))
     payload = request.json
     data = payload['data']
-    if (method != 'decrypt'):
+    if (method != 'decrypt' and cipher != 3):
       data = extract_alphabet(data)
     key = payload['key']
     m = payload['m']
@@ -34,15 +34,15 @@ def index():
     conversion = payload['conversion']
 
     if (cipher == 0):
-      a = Vigenere(data, key, 'standard')
+      a = Vigenere(data, extract_alphabet(key), 'standard')
     if (cipher == 1):
-      a = Vigenere(data, key, 'autokey', usedKey)
+      a = Vigenere(data, extract_alphabet(key), 'autokey', usedKey)
     if (cipher == 2):
-      a = Vigenere(data, key, 'full', usedKey, conversion)
+      a = Vigenere(data, extract_alphabet(key), 'full', usedKey, conversion)
     if (cipher == 3):
-      a = Vigenere(data, key, 'extended')
+      a = Vigenere(data, extract_alphabet(key), 'extended')
     if (cipher == 4):
-      a = Playfair(data, key)
+      a = Playfair(data, extract_alphabet(key))
     if (cipher == 5):
       a = Affine(data, m, b)
     if (cipher == 6):
@@ -62,8 +62,8 @@ def index():
       return jsonify({ 'result': result, 'conversion': a.conversion })
 
     return jsonify({ 'result': result })
-  except Exception as err:
-    return jsonify({ 'error': str(repr(err))}), 400
+  # except Exception as err:
+  #   return jsonify({ 'error': str(repr(err))}), 400
 
 if __name__ == '__main__':
   app.run(debug = True)

@@ -14,3 +14,11 @@ def parse_n_char(n, string):
 
   return parsed_string
 
+def remove_space(string):
+  text = ''
+  for char in string:
+    if (char != ' '):
+      text += char
+  
+  return text
+

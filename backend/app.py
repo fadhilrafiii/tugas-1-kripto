@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 
 # Import utils
 from utils.helper import *
-from utils.string import extract_alphabet, parse_n_char
+from utils.string import *
 
 # Import Algorithm
 from cipher.vigenere import Vigenere
@@ -24,9 +24,11 @@ def index():
     method = request.args.get('method')
     cipher = int(request.args.get('cipher'))
     payload = request.json
-    data = payload['data']
-    if (method != 'decrypt' and cipher != 3):
+    data = remove_space(payload['data'])
+    
+    if (cipher != 3):
       data = extract_alphabet(data)
+
     key = payload['key']
     m = payload['m']
     b = payload['b']
@@ -54,7 +56,7 @@ def index():
     if (method == 'decrypt'):
       result = a.decrypt()
     else:
-      result = a.encrypt()
+      result = parse_n_char(5, a.encrypt())
 
     if (cipher == 1):
       return jsonify({ 'result': result, 'usedKey': a.key_stream })

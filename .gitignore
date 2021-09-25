@@ -129,5 +129,6 @@ dmypy.json
 .pyre/
 
 # for frontend
-node-modules
-package-lock.json
+node_modules
+**/*/package-lock.json
+*.pdf

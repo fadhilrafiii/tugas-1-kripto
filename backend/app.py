@@ -73,8 +73,8 @@ def index():
   except Exception as err:
     return jsonify({ 'error': str(repr(err))}), 400
 
-@app.route('/stegano', methods=['POST'])
-def stegano():
+@app.route('/steganography', methods=['POST'])
+def steganography():
   message: str = request.form.get("message")
   hex_data: str = request.form.get("data")
   if (hex_data):

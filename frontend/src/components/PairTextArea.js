@@ -1,34 +1,26 @@
 import React, { useState } from "react";
-import { Grid, IconButton, TextField } from '@material-ui/core';
-import { SwapHoriz, InsertDriveFile } from '@material-ui/icons';
+import { Grid, IconButton, TextField } from "@material-ui/core";
+import { SwapHoriz, InsertDriveFile } from "@material-ui/icons";
 
 const PairTextArea = (props) => {
-  const {
-    type,
-    swap,
-    cipher,
-    data,
-    setData,
-    result,
-    onSwap,
-    onDownload
-  } = props;
+  const { type, swap, cipher, data, setData, result, onSwap, onDownload } =
+    props;
 
   const [file, setFile] = useState(null);
-  
+
   const onInput = (e) => {
     if (e.target.files.length) {
       setFile(e.target.files[0]);
 
-      const reader = new FileReader()
+      const reader = new FileReader();
 
-      reader.onload = async (e) => { 
-        let text = (e.target.result)
+      reader.onloadend = (e) => {
+        let text = e.target.result;
         setData(text);
       };
-      reader.readAsBinaryString(e.target.files[0])
+      reader.readAsBinaryString(e.target.files[0]);
     }
-  }
+  };
 
   return (
     <Grid item container className="container">
@@ -36,7 +28,11 @@ const PairTextArea = (props) => {
         <Grid item container wrap="nowrap" className="title-input mb">
           <h3>{swap ? "Plain Text" : "Cipher Text"}</h3>
           <input
-            accept={((type === 'crypto' && cipher === 3) || type !== "crypto") ? "" : "text/plain"}
+            accept={
+              (type === "crypto" && cipher === 3) || type !== "crypto"
+                ? ""
+                : "text/plain"
+            }
             style={{ display: "none" }}
             id="raised-button-file"
             multiple

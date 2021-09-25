@@ -10,7 +10,6 @@ import {
   Button,
   CircularProgress,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 import { Lock, LockOpen } from '@material-ui/icons';
 import axios from 'axios';
 import isCoprime from 'is-coprime';
@@ -21,6 +20,7 @@ import pack from 'ndarray-pack';
 //  IMPORT COMPONENT
 import MatrixInput from 'components/MatrixInput';
 import PairTextArea from 'components/PairTextArea';
+import Alert from 'components/Alert';
 
 // BACKEND BASE URL
 const BASE_URL = 'http://127.0.0.1:5000';
@@ -165,19 +165,14 @@ function Cryptography() {
 
   return (
     <Grid item container className="cryptography">
-      {(Boolean(successMessage) || Boolean(errorMessage)) && (
-        <Alert
-          className="alert"
-          variant="filled"
-          severity={successMessage ? 'success' : 'error'}
-          onClose={() => {
-            setSuccessMessage('');
-            setErrorMessage('');
-          }}
-        >
-          {successMessage || errorMessage}
-        </Alert>
-      )}
+      <Alert
+        type={successMessage ? 'success' : 'error'}
+        message={successMessage || errorMessage}
+        setMessage={() => {
+          setErrorMessage('');
+          setSuccessMessage('');
+        }}
+      />
       <Grid item container className="box">
         <PairTextArea
           type="crypto"

@@ -15,10 +15,10 @@ class RC4:
       self.S[i], self.S[j] = self.swap_value(self.S[i], self.S[j])
 
   def pseudo_random(self):
-    i = 0
     j = 0
     keystream = ''
-    for i in range(i+1, len(self.data) + 1):
+    for i in range(len(self.data)):
+      i = (i + 1) % 256;
       j = (j + self.S[i]) % 256
 
       self.S[i], self.S[j] = self.swap_value(self.S[i], self.S[j])
@@ -33,3 +33,5 @@ class RC4:
     keystream = self.pseudo_random()
 
     return bytes(a ^ b for a, b in zip(bytes(self.data, 'iso-8859-1'), bytes(keystream, 'iso-8859-1'))).decode('iso-8859-1')
+
+

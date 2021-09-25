@@ -19,19 +19,14 @@ const PairTextArea = (props) => {
   const onInput = (e) => {
     if (e.target.files.length) {
       setFile(e.target.files[0]);
-      const formatFile = e.target.files[0].name.slice(-4);
 
       const reader = new FileReader()
 
       reader.onload = async (e) => { 
         let text = (e.target.result)
-
-        if (formatFile !== '.txt') {
-          text = btoa(unescape(encodeURIComponent(text)));
-        }
         setData(text);
       };
-      reader.readAsText(e.target.files[0])
+      reader.readAsBinaryString(e.target.files[0])
     }
   }
 

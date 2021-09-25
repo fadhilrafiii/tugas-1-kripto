@@ -19,7 +19,7 @@ html {
 .header {
   height: 60px;
   color: white;
-  position: relative;
+  position: fixed;
   background-color: $primary;
   box-shadow: 1px 1px 16px 2px $shadow;
   display: flex;
@@ -119,7 +119,7 @@ html {
 
 .box {
   min-height: calc(100vh - 60px);
-  padding: 6% 5% 0%;
+  padding: calc(6% + 60px) 5% 0%;
   background-color: $secondary;
 }
 
@@ -192,7 +192,7 @@ html {
     overflow: unset !important;
 
     input {
-      min-width: 330px;
+      min-width: 300px;
     }
   }
 }

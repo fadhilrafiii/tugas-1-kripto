@@ -4,10 +4,10 @@ from utils.string import convert_from_binary, \
 class VideoSteganography:
     def __init__(self, _video: str) -> None:
         self.video = convert_to_binary(_video)
-        self.hidden = ''
+        self.stego_video = ''
 
     def extract(self) -> str:
-        stego_video = split_binary_string(self.hidden)
+        stego_video = split_binary_string(self.stego_video)
 
         message_bin = ''
         
@@ -27,4 +27,4 @@ class VideoSteganography:
                 break
             video[i][7] = message_bin[i]
         
-        self.hidden = "".join(video)
+        self.stego_video = "".join(video)

@@ -118,7 +118,7 @@ html {
 }
 
 .box {
-  min-height: calc(100vh - 60px);
+  min-height: 100vh;
   padding: calc(6% + 60px) 5% 0%;
   background-color: $secondary;
 }

@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 # Import utils
 from utils.helper import *
@@ -23,6 +23,7 @@ def index():
   # try:
     method = request.args.get('method')
     cipher = int(request.args.get('cipher'))
+    media = request.files.get("media")
     payload = request.json
     data = remove_space(payload['data'])
     
@@ -66,6 +67,14 @@ def index():
     return jsonify({ 'result': result })
   # except Exception as err:
   #   return jsonify({ 'error': str(repr(err))}), 400
+
+@app.route('/stegano', methods=['POST'])
+def stegano():
+  media = request.files.get("media")
+  message = request.form.get("message")
+  if (media):
+    bytes = media.stream.read()
+    pass
 
 if __name__ == '__main__':
   app.run(debug = True)

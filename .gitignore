@@ -131,3 +131,4 @@ dmypy.json
 # for frontend
 node-modules
 package-lock.json
+*.pdf

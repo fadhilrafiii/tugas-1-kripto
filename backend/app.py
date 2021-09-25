@@ -70,10 +70,11 @@ def index():
 
 @app.route('/stegano', methods=['POST'])
 def stegano():
-  media = request.files.get("media")
-  message = request.form.get("message")
-  if (media):
-    bytes = media.stream.read()
+  message: str = request.form.get("message")
+  hex_data: str = request.form.get("data")
+  if (hex_data):
+    for c in hex_data:
+      pass
     pass
 
 if __name__ == '__main__':

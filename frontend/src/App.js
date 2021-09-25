@@ -1,16 +1,15 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from "react";
 
 //  IMPORT ROUTER
-import Route from 'router/index';
+import Route from "router/index";
 
 // IMPORT COMPONENT
-import Navbar from 'components/Navbar';
-import Fallback from 'components/Fallback';
+import { Navbar, Fallback } from "components";
 
 // IMPORT STYLES
-import './index.scss';
+import "./index.scss";
 
-function App () {
+function App() {
   return (
     <div className="App">
       <Suspense fallback={<Fallback />}>

@@ -1,28 +1,18 @@
 // IMPORT MODULES
-import React from 'react';
-import Alert from '@material-ui/lab/Alert';
+import React from "react";
+import MaterialAlert from "@material-ui/lab/Alert";
 
-const CustomAlert = (props) => {
-  const {
-    type,
-    message,
-    setMessage,
-  } = props;
-
-  if (message) {
-    return (
-      <Alert
+export const Alert = ({ type, message, setMessage }) => {
+  return (
+    message && (
+      <MaterialAlert
         className="alert"
         variant="filled"
         severity={type}
-        onClose={() =>  setMessage('') }
+        onClose={() => setMessage("")}
       >
         {message}
-      </Alert>
-    );
-  }
-
-  return <></>
-}
-
-export default CustomAlert;
+      </MaterialAlert>
+    )
+  );
+};

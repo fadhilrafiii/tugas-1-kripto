@@ -2,10 +2,16 @@ import React, { useState } from "react";
 import { Grid, IconButton, TextField } from "@material-ui/core";
 import { SwapHoriz, InsertDriveFile } from "@material-ui/icons";
 
-const PairTextArea = (props) => {
-  const { type, swap, cipher, data, setData, result, onSwap, onDownload } =
-    props;
-
+export const PairTextArea = ({
+  type,
+  swap,
+  cipher,
+  data,
+  setData,
+  result,
+  onSwap,
+  onDownload,
+}) => {
   const [file, setFile] = useState(null);
 
   const onInput = (e) => {
@@ -87,5 +93,3 @@ const PairTextArea = (props) => {
     </Grid>
   );
 };
-
-export default PairTextArea;

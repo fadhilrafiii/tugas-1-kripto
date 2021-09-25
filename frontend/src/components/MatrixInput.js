@@ -1,13 +1,26 @@
-import React from 'react';
-import { Grid, TextField } from '@material-ui/core';
+import React from "react";
+import { Grid, TextField } from "@material-ui/core";
 
-const MatrixInput = (props) => {
-  const { matrix, handleChangeMatrix } = props;
-
+export const MatrixInput = ({ matrix, handleChangeMatrix }) => {
   return (
-    <Grid item container spacing={1} className="matrix-input" wrap="nowrap" direction="column">
+    <Grid
+      item
+      container
+      spacing={1}
+      className="matrix-input"
+      wrap="nowrap"
+      direction="column"
+    >
       {matrix.map((row, i) => (
-        <Grid key={i} item container spacing={1} className="matrix-input-row" wrap="nowrap" justifyContent="center">
+        <Grid
+          key={i}
+          item
+          container
+          spacing={1}
+          className="matrix-input-row"
+          wrap="nowrap"
+          justifyContent="center"
+        >
           {row.map((col, j) => (
             <Grid key={j} item className="matrix-input-cell">
               <TextField
@@ -23,7 +36,5 @@ const MatrixInput = (props) => {
         </Grid>
       ))}
     </Grid>
-  )
-}
-
-export default MatrixInput;
+  );
+};

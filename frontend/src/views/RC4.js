@@ -1,42 +1,42 @@
 // IMPORT MODULES
-import React, { useState } from 'react';
-import { Grid, TextField, CircularProgress, Button } from '@material-ui/core';
-import { Lock, LockOpen } from '@material-ui/icons';
-import querystring from 'querystring';
-import axios from 'axios';
- 
+import React, { useState } from "react";
+import { Grid, TextField, CircularProgress, Button } from "@material-ui/core";
+import { Lock, LockOpen } from "@material-ui/icons";
+import querystring from "querystring";
+import axios from "axios";
+
 // IMPORT COMPONENTS
-import PairTextArea from 'components/PairTextArea';
-import Alert from 'components/Alert';
+import { PairTextArea, Alert } from "components";
 
 // BACKEND BASE URL
-const BASE_URL = 'http://127.0.0.1:5000';
+const BASE_URL = "http://127.0.0.1:5000";
 
 const RC4 = () => {
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [swap, setSwap] = useState(true);
 
-  const [data, setData] = useState('');
-  const [result, setResult] = useState('');
-  const [key, setKey] = useState('');
+  const [data, setData] = useState("");
+  const [result, setResult] = useState("");
+  const [key, setKey] = useState("");
 
   const handleSwap = () => {
-    if (result) setData(result); setResult('');
+    if (result) setData(result);
+    setResult("");
 
-    setSwap(prev => !prev)
+    setSwap((prev) => !prev);
   };
 
   const submitData = async () => {
-    const query =  querystring.stringify({
-      method: swap ? 'encrypt' : 'decrypt',
+    const query = querystring.stringify({
+      method: swap ? "encrypt" : "decrypt",
       cipher: 7,
     });
 
     if (!key) {
-      setErrorMessage('Set key first!');
+      setErrorMessage("Set key first!");
       return;
     }
 
@@ -46,27 +46,33 @@ const RC4 = () => {
     };
 
     setLoading(true);
-    await axios.post(`${BASE_URL}?${query}`, payload)
+    await axios
+      .post(`${BASE_URL}?${query}`, payload)
       .then((res) => {
         setLoading(false);
-        setSuccessMessage(`${swap ? 'Encrypt' : 'Decrypt'} success!`);
+        setSuccessMessage(`${swap ? "Encrypt" : "Decrypt"} success!`);
         setResult(res.data.result);
-        setErrorMessage(res.data?.message ? res.data?.message : '');
-      }).catch((err) => {
+        setErrorMessage(res.data?.message ? res.data?.message : "");
+      })
+      .catch((err) => {
         setLoading(false);
         console.log(err);
-        setErrorMessage(err.response?.data?.message ? err.response?.data?.message :'Unknown error has occured!');
-      })
-  }
+        setErrorMessage(
+          err.response?.data?.message
+            ? err.response?.data?.message
+            : "Unknown error has occured!"
+        );
+      });
+  };
 
   return (
     <div className="rc4">
       <Alert
-        type={successMessage ? 'success' : 'error'}
+        type={successMessage ? "success" : "error"}
         message={successMessage || errorMessage}
         setMessage={() => {
-          setErrorMessage('');
-          setSuccessMessage('');
+          setErrorMessage("");
+          setSuccessMessage("");
         }}
       />
       <Grid item container className="box">
@@ -96,14 +102,22 @@ const RC4 = () => {
             onClick={submitData}
             size="large"
             className="submit-btn"
-            startIcon={loading ? <CircularProgress size={25} color="inherit" thickness={6} /> : swap ? <Lock /> : <LockOpen />}
+            startIcon={
+              loading ? (
+                <CircularProgress size={25} color="inherit" thickness={6} />
+              ) : swap ? (
+                <Lock />
+              ) : (
+                <LockOpen />
+              )
+            }
           >
-            {swap ? 'ENCRYPT' : 'DECRYPT'}
+            {swap ? "ENCRYPT" : "DECRYPT"}
           </Button>
         </Grid>
       </Grid>
     </div>
-  )
+  );
 };
 
 export default RC4;

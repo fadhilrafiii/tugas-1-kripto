@@ -2,30 +2,39 @@ import React, { useState } from "react";
 
 const MenuList = [
   {
-    route: '/cryptography',
-    text: 'Cryptography'
+    route: "/cryptography",
+    text: "Cryptography",
   },
   {
-    route: '/rc4',
-    text: 'RC4'
+    route: "/rc4",
+    text: "RC4",
   },
   {
-    route: '/steganography',
-    text: 'Steganography'
-  }
-]
+    route: "/steganography",
+    text: "Steganography",
+  },
+];
 
-const Navbar = (props) => {
+export const Navbar = () => {
   const [openNav, setOpenNav] = useState(false);
   return (
     <header className="header">
       <div className="title">Cipher Algorithm</div>
       <div className={openNav ? "menu-list" : "menu-list hidden"}>
         {MenuList.map(({ route, text }) => (
-          <a key={route} href={route} className={route === window.location.pathname ? 'active' : ''}>{text}</a>
+          <a
+            key={route}
+            href={route}
+            className={route === window.location.pathname ? "active" : ""}
+          >
+            {text}
+          </a>
         ))}
       </div>
-      <div className="hamburger-btn" onClick={() => setOpenNav(prev => !prev)}>
+      <div
+        className="hamburger-btn"
+        onClick={() => setOpenNav((prev) => !prev)}
+      >
         <div className="white-strip" />
         <div className="white-strip" />
         <div className="white-strip" />
@@ -33,5 +42,3 @@ const Navbar = (props) => {
     </header>
   );
 };
-
-export default Navbar;

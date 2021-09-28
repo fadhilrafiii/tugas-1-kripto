@@ -30,12 +30,17 @@ export default function Steganography() {
 
   const onSubmit = useCallback(() => {
     setLoading(true);
+
+    const formData = new FormData();
+    formData.append("media", file);
+    formData.append("hide", !swap);
+    formData.append("message", message);
+    formData.append("extension", fileExtension);
     axios
-      .post(`${API_URL}/steganography`, {
-        media: file,
-        hide: !swap,
-        message: message,
-        extension: fileExtension,
+      .post(`${API_URL}/steganography`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then((res) => {
         /*
@@ -65,21 +70,19 @@ export default function Steganography() {
           <Grid item container lg={5} className="left">
             <Grid item container wrap="nowrap" className="title-input mb">
               <h3>{swap ? "Stego Media" : "Media"}</h3>
-              <form method="POST" encType="multipart/form-data">
-                <input
-                  accept=".bmp,.wav,.avi,.png"
-                  style={{ display: "none" }}
-                  id="raised-button-file"
-                  multiple
-                  type="file"
-                  onChange={onChangeFile}
-                />
-                <label htmlFor="raised-button-file">
-                  <IconButton variant="raised" component="span">
-                    <InsertDriveFile />
-                  </IconButton>
-                </label>
-              </form>
+              <input
+                accept=".bmp,.wav,.avi,.png"
+                style={{ display: "none" }}
+                id="raised-button-file"
+                multiple
+                type="file"
+                onChange={onChangeFile}
+              />
+              <label htmlFor="raised-button-file">
+                <IconButton variant="raised" component="span">
+                  <InsertDriveFile />
+                </IconButton>
+              </label>
             </Grid>
             {file?.name && (
               <div className="error mb">{`You uploaded ${file.name}!`}</div>

@@ -76,16 +76,14 @@ def index():
 
 @app.route('/steganography', methods=['POST'])
 def steganography():
-  print(request.json)
   message: str = request.form.get("message")
   hide: bool = bool(request.form.get("hide"))
-  print(request.files)
   media: FileStorage = request.files.get("media")
-  print('media', media)
-  fileExtension: str = request.form.get("fileExtension")
+  fileExtension: str = request.form.get("extension")
+
+  print(message, hide, media.stream.read(5), fileExtension)
 
   if (media):
-    print(media.stream.read())
     pass
   return jsonify({ 'result': '' })
 

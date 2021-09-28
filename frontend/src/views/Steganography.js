@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { InsertDriveFile, Lock, LockOpen, SwapHoriz } from "@material-ui/icons";
 import axios from "axios";
+
 import { API_URL } from "constant";
 
 export default function Steganography() {
@@ -19,7 +20,10 @@ export default function Steganography() {
 
   const handleSwap = useCallback(() => setSwap(!swap), [swap]);
   const onChangeFile = useCallback((e) => setFile(e.target.files[0]), []);
-  const fileExtension = useMemo(() => file.name.split(".").pop(), [file]);
+  const fileExtension = useMemo(
+    () => "" || file?.name.split(".").pop(),
+    [file]
+  );
 
   const onSubmit = useCallback(() => {
     setLoading(true);
@@ -109,7 +113,7 @@ export default function Steganography() {
               )
             }
           >
-            {swap ? "EXTRACT" : "HIDE"}
+            {loading ? "LOADING" : swap ? "EXTRACT" : "HIDE"}
           </Button>
         </Grid>
       </Grid>

@@ -9,7 +9,7 @@ import axios from "axios";
 import { PairTextArea, Alert } from "components";
 
 // BACKEND BASE URL
-const BASE_URL = "http://127.0.0.1:5000";
+import { API_URL } from "constant";
 
 const RC4 = () => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ const RC4 = () => {
 
     setLoading(true);
     await axios
-      .post(`${BASE_URL}?${query}`, payload)
+      .post(`${API_URL}?${query}`, payload)
       .then((res) => {
         setLoading(false);
         setSuccessMessage(`${swap ? "Encrypt" : "Decrypt"} success!`);

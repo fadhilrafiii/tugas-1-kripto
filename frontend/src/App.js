@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 
 //  IMPORT ROUTER
-import Route from "router/index";
+import Route from "router";
 
 // IMPORT COMPONENT
 import { Navbar, Fallback } from "components";

@@ -81,8 +81,6 @@ def steganography():
   media: FileStorage = request.files.get("media")
   fileExtension: str = request.form.get("extension")
 
-  print(message, hide, media.stream.read(5), fileExtension)
-
   if (media):
     pass
   return jsonify({ 'result': '' })

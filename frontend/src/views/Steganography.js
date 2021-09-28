@@ -19,7 +19,10 @@ export default function Steganography() {
   const [result, setResult] = useState(null);
 
   const handleSwap = useCallback(() => setSwap(!swap), [swap]);
-  const onChangeFile = useCallback((e) => setFile(e.target.files[0]), []);
+  const onChangeFile = useCallback((e) => {
+    setFile(e.target.files[0]);
+    console.log(e.target.files);
+  }, []);
   const fileExtension = useMemo(
     () => "" || file?.name.split(".").pop(),
     [file]
@@ -28,17 +31,24 @@ export default function Steganography() {
   const onSubmit = useCallback(() => {
     setLoading(true);
     axios
-      .post(`${API_URL}/steganography`, { media: file })
+      .post(`${API_URL}/steganography`, {
+        media: file,
+        hide: !swap,
+        message: message,
+        extension: fileExtension,
+      })
       .then((res) => {
+        /*
         setResult(
           new File(
-            res.data.stego,
+            res.data.result,
             `${swap ? "Stego Media" : "Media"}.${fileExtension}`
           )
         );
+        */
       })
       .finally(() => setLoading(false));
-  }, [file, fileExtension, swap]);
+  }, [file, fileExtension, swap, message]);
 
   const download = useCallback(() => {
     const element = document.createElement("a");
@@ -55,19 +65,21 @@ export default function Steganography() {
           <Grid item container lg={5} className="left">
             <Grid item container wrap="nowrap" className="title-input mb">
               <h3>{swap ? "Stego Media" : "Media"}</h3>
-              <input
-                accept=".bmp,.wav,.avi,.png"
-                style={{ display: "none" }}
-                id="raised-button-file"
-                multiple
-                type="file"
-                onChange={onChangeFile}
-              />
-              <label htmlFor="raised-button-file">
-                <IconButton variant="raised" component="span">
-                  <InsertDriveFile />
-                </IconButton>
-              </label>
+              <form method="POST" encType="multipart/form-data">
+                <input
+                  accept=".bmp,.wav,.avi,.png"
+                  style={{ display: "none" }}
+                  id="raised-button-file"
+                  multiple
+                  type="file"
+                  onChange={onChangeFile}
+                />
+                <label htmlFor="raised-button-file">
+                  <IconButton variant="raised" component="span">
+                    <InsertDriveFile />
+                  </IconButton>
+                </label>
+              </form>
             </Grid>
             {file?.name && (
               <div className="error mb">{`You uploaded ${file.name}!`}</div>

@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
+from werkzeug.datastructures import FileStorage
 
 # Import utils
 from utils.helper import *
@@ -75,12 +76,19 @@ def index():
 
 @app.route('/steganography', methods=['POST'])
 def steganography():
+  print(request.json)
   message: str = request.form.get("message")
-  hex_data: str = request.form.get("data")
-  if (hex_data):
-    for c in hex_data:
-      pass
+  hide: bool = bool(request.form.get("hide"))
+  print(request.files)
+  media: FileStorage = request.files.get("media")
+  print('media', media)
+  fileExtension: str = request.form.get("fileExtension")
+
+  if (media):
+    print(media.stream.read())
     pass
+  return jsonify({ 'result': '' })
+
 
 if __name__ == '__main__':
   app.run(debug = True)

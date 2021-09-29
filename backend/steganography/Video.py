@@ -8,8 +8,8 @@ from .Image import ImageSteganography
 class VideoSteganography:
     def __init__(self, _filename: str, _length) -> None:
         self.filename = _filename
-        cap = cv2.VideoCapture(os.path.join(TEMPORARY_INPUT_DIR, _filename))
 
+        cap = cv2.VideoCapture(os.path.join(TEMPORARY_INPUT_DIR, _filename))
         self.width = int(cap.get(3))
         self.height = int(cap.get(4))
         self.fps = cap.get(cv2.CAP_PROP_FPS)
@@ -18,10 +18,12 @@ class VideoSteganography:
         while (cap.isOpened()):
             (success, frame) = cap.read()
             if (success):
-                cv2.imwrite(os.path.join(TEMPORARY_INPUT_DIR, f"{self.frame_number}.bmp"), frame)
+                cv2.imwrite(os.path.join(TEMPORARY_INPUT_DIR, f"{self.frame_number}.png"), frame)
                 self.frame_number += 1
             else:
                 break
+        
+        cap.release()
 
         self.length = _length
         self.result = None # path
@@ -44,7 +46,7 @@ class VideoSteganography:
         messages = split_string(message, self.width * self.height * 3)
         inserted_into = len(messages)
         for i in range(self.frame_number):
-            stego_image = ImageSteganography(f"{i}.bmp", self.width * self.height * 3)
+            stego_image = ImageSteganography(f"{i}.png", self.width * self.height * 3)
 
             if (i >= inserted_into): stego_image.hide('')
             else: stego_image.hide(messages[i])
@@ -52,6 +54,6 @@ class VideoSteganography:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter(os.path.join(TEMPORARY_OUTPUT_DIR, self.filename), fourcc, self.fps, (self.width, self.height))
         for i in range(self.frame_number):
-            out.write(cv2.imread(f"{i}.bmp"))
+            out.write(cv2.imread(f"{i}.png"))
         
         out.release()

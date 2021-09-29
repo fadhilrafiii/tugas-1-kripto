@@ -67,7 +67,7 @@ export default function Steganography() {
             <Grid item container wrap="nowrap" className="title-input mb">
               <h3>{swap ? "Stego Media" : "Media"}</h3>
               <input
-                accept=".bmp,.wav,.avi,.png"
+                accept=".bmp,.avi,.png"
                 style={{ display: "none" }}
                 id="raised-button-file"
                 multiple

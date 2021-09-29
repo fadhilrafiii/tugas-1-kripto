@@ -44,17 +44,12 @@ export default function Steganography() {
         },
       })
       .then((res) => {
-        /*
-        setResult(
-          new File(
-            res.data.result,
-            `${swap ? "Stego Media" : "Media"}.${fileExtension}`
-          )
-        );
-        */
+        console.log(res.data);
       })
       .finally(() => setLoading(false));
   }, [file, fileExtension, swap, message]);
+
+  console.log(file);
 
   const download = useCallback(() => {
     const element = document.createElement("a");

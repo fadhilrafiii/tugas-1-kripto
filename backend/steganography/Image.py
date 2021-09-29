@@ -21,7 +21,7 @@ class ImageSteganography:
         message_bin = ''
 
         for i in range (0, self.length):
-            message_bin += ("{0:08b}".format(self.result[i]))[7]
+            message_bin += ("{0:08b}".format(self.image[i]))[7]
 
         return message_bin
 
@@ -30,9 +30,10 @@ class ImageSteganography:
         message in binary string
         """
 
-        length = len(message)
-        for i in range(length):
-            rgb_bin = "{0:08b}".format(self.image[i])
-            self.result[i] = int(rgb_bin[:7] + message[i], 2)
+        if (message != ''):
+            length = len(message)
+            for i in range(length):
+                rgb_bin = "{0:08b}".format(self.image[i])
+                self.result[i] = int(rgb_bin[:7] + message[i], 2)
         
         cv2.imwrite(os.path.join(TEMPORARY_OUTPUT_DIR, self.filename), self.result.reshape((self.height, self.width, 3)))

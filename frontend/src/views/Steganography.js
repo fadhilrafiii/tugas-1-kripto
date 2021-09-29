@@ -14,15 +14,20 @@ import { API_URL } from "constant";
 export default function Steganography() {
   const [swap, setSwap] = useState(false);
   const [file, setFile] = useState(null);
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
+  const [messageLength, setMessageLength] = useState(0);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
   const handleSwap = useCallback(() => setSwap(!swap), [swap]);
-  const onChangeFile = useCallback((e) => {
-    setFile(e.target.files[0]);
-    console.log(e.target.files);
-  }, []);
+
+  const onChangeLength = useCallback(
+    (e) => setMessageLength(e.target.value),
+    []
+  );
+
+  const onChangeFile = useCallback((e) => setFile(e.target.files[0]), []);
+
   const fileExtension = useMemo(
     () => "" || file?.name.split(".").pop(),
     [file]
@@ -36,7 +41,7 @@ export default function Steganography() {
     formData.append("hide", !swap);
     formData.append("message", message);
     formData.append("extension", fileExtension);
-    formData.append("length", message.length);
+    formData.append("length", swap ? messageLength : message.length);
     axios
       .post(`${API_URL}/steganography`, formData, {
         headers: {
@@ -47,9 +52,7 @@ export default function Steganography() {
         console.log(res.data);
       })
       .finally(() => setLoading(false));
-  }, [file, fileExtension, swap, message]);
-
-  console.log(file);
+  }, [file, fileExtension, swap, message, messageLength]);
 
   const download = useCallback(() => {
     const element = document.createElement("a");
@@ -99,15 +102,24 @@ export default function Steganography() {
           </Grid>
         </Grid>
         <Grid item container direction="column" className="submit-section">
-          <TextField
-            variant="filled"
-            className="input num mb"
-            value={message}
-            label="Message"
-            placeholder="Message"
-            required
-            onChange={(e) => setMessage(e.target.value)}
-          />
+          {swap ? (
+            <input
+              type="number"
+              value={messageLength}
+              onChange={onChangeLength}
+              placeholder="Message length"
+            />
+          ) : (
+            <TextField
+              variant="filled"
+              className="input num mb"
+              value={message}
+              label="Message"
+              placeholder="Message"
+              required
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          )}
           <Button
             variant="contained"
             color="primary"

@@ -14,13 +14,12 @@ class ImageSteganography:
         self.result = self.image.flatten()
 
         self.filename = _filename
-
         self.length = _length
     
     def extract(self) -> str:
         message_bin = ''
 
-        for i in range (0, self.length):
+        for i in range (0, self.length, 1):
             message_bin += ("{0:08b}".format(self.image[i]))[7]
 
         return message_bin

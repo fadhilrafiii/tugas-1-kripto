@@ -1,5 +1,6 @@
 import os
 import shutil
+import base64
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
@@ -94,8 +95,10 @@ def steganography():
   os.mkdir(TEMPORARY_OUTPUT_DIR)
 
   message: str = request.form.get("message")
-  length: int = int(request.form.get("length"))
-  hide: bool = bool(request.form.get("hide"))
+
+  # 5 characters of key = 40 bits of length
+  length = int(request.form.get("length")) * 8
+  hide = True if request.form.get("hide") == 'true' else False
   media: FileStorage = request.files.get("media")
   fileExtension: str = request.form.get("extension")
 
@@ -109,15 +112,19 @@ def steganography():
 
   if (fileExtension == 'bmp' or fileExtension == 'png'):
     stego = ImageSteganography(media.filename, length)
-    stego.hide(message)
-
-    return send_from_directory()
+    if (hide):
+      stego.hide(message)
+    else:
+      return jsonify({ 'result': convert_from_binary(stego.extract()) })
   else:
     stego = VideoSteganography(media.filename, length)
-    stego.hide(message)
-    pass
+    if (hide):
+      stego.hide(message)
+    else:
+      return jsonify({ 'result': convert_from_binary(stego.extract()) })
 
-  return jsonify({ 'result': '' })
+  file = open(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename), "rb")
+  return jsonify({ 'result': str(base64.b64encode(file.read())) })
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 import cv2
 import os
+import math
 
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
 from utils.string import convert_from_binary, split_binary_string, split_string
@@ -29,18 +30,18 @@ class VideoSteganography:
         self.result = None # path
 
     def extract(self) -> str:
-        result = split_binary_string(self.result)
-
         message_bin = ''
-        
-        filename_length = len(result)
 
-        # ignore bits if the messages are too many
-        loops = min(self.length, filename_length)
-        for i in range (0, loops, 1):
-            message_bin += result[i][7]
+        each_frame_message_length = 3 * self.width * self.height
+        last_frame_message_length = self.length % (3 * self.width * self.height)
+        read_frames = math.ceil(self.length / (3 * self.width * self.height))
+        for i in range(read_frames):
+            if (read_frames == i + 1):
+                message_bin += ImageSteganography(f"{i}.png", last_frame_message_length).extract()
+            else:
+                message_bin += ImageSteganography(f"{i}.png", each_frame_message_length).extract()
         
-        return convert_from_binary(message_bin)
+        return message_bin
 
     def hide(self, message: str) -> None:
         messages = split_string(message, self.width * self.height * 3)

@@ -31,8 +31,12 @@ def convert_to_binary(string: str) -> str:
 
 def split_binary_string(string: str) -> List[str]:
   splitted = re.split("([01]{8})", string)
-  # for string '00100101',
-  # splitted = ['', '00100101', '']
+  while(splitted.count('') > 0):
+    splitted.remove('')
+  return splitted
+
+def split_string(string: str, length: str) -> List[str]:
+  splitted = re.split("(.{length})", string)
   while(splitted.count('') > 0):
     splitted.remove('')
   return splitted

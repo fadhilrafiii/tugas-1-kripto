@@ -1,3 +1,5 @@
+import os
+import shutil
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
@@ -12,6 +14,12 @@ from cipher.playfair import Playfair
 from cipher.affine import Affine
 from cipher.hill import Hill
 from cipher.rc4 import RC4
+
+from steganography.Video import VideoSteganography
+from steganography.Image import ImageSteganography
+
+# CWD in backend
+from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
 
 # INIT APP
 app = Flask(__name__)
@@ -77,12 +85,31 @@ def index():
 @app.route('/steganography', methods=['POST'])
 def steganography():
   message: str = request.form.get("message")
+  length: int = int(request.form.get("length"))
   hide: bool = bool(request.form.get("hide"))
   media: FileStorage = request.files.get("media")
   fileExtension: str = request.form.get("extension")
 
-  if (media):
+  if (fileExtension != 'bmp' and fileExtension != 'wav' and fileExtension != 'avi' and fileExtension != 'png'):
+    return jsonify({ 'error': 'invalid file format!' })
+
+  if not os.path.exists(TEMPORARY_INPUT_DIR):
+    os.mkdir(TEMPORARY_INPUT_DIR)
+  if not os.path.exists(TEMPORARY_OUTPUT_DIR):
+    os.mkdir(TEMPORARY_OUTPUT_DIR)
+
+  file_path = os.path.join(TEMPORARY_INPUT_DIR, media.filename)
+  media.save(file_path)
+
+  message = convert_to_binary(message)
+
+  if (fileExtension == 'bmp' or fileExtension == 'png'):
+    stego = ImageSteganography(media.filename, length)
+    stego.hide(message)
+  else:
+    stego = VideoSteganography(media.filename, length)
     pass
+
   return jsonify({ 'result': '' })
 
 

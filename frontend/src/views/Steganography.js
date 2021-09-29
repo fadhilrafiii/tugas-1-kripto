@@ -36,6 +36,7 @@ export default function Steganography() {
     formData.append("hide", !swap);
     formData.append("message", message);
     formData.append("extension", fileExtension);
+    formData.append("length", message.length);
     axios
       .post(`${API_URL}/steganography`, formData, {
         headers: {

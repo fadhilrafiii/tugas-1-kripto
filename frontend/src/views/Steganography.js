@@ -9,6 +9,7 @@ import {
 import { InsertDriveFile, Lock, LockOpen, SwapHoriz } from "@material-ui/icons";
 import axios from "axios";
 
+import { Alert } from "components";
 import { API_URL } from "constant";
 
 export default function Steganography() {
@@ -26,7 +27,10 @@ export default function Steganography() {
     []
   );
 
-  const onChangeFile = useCallback((e) => setFile(e.target.files[0]), []);
+  const onChangeFile = useCallback((e) => {
+    setFile(e.target.files[0]);
+    setResult(null);
+  }, []);
 
   const fileExtension = useMemo(
     () => "" || file?.name.split(".").pop(),
@@ -49,21 +53,16 @@ export default function Steganography() {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        setResult(res.data.result);
       })
       .finally(() => setLoading(false));
   }, [file, fileExtension, swap, message, messageLength]);
 
-  const download = useCallback(() => {
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(result);
-    element.download = result.name;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  }, [result]);
-
   return (
     <Grid item container className="steganography">
+      {swap && result && (
+        <Alert type="info" message={result} setMessage={() => null} />
+      )}
       <Grid item container className="box">
         <Grid item container className="container">
           <Grid item container lg={5} className="left">
@@ -95,9 +94,16 @@ export default function Steganography() {
           <Grid item container lg={5} className="right">
             <h3>{swap ? "Media" : "Stego Media"}</h3>
             {result && (
-              <div className="download" onClick={download}>
-                Download result in .{fileExtension}
-              </div>
+              <>
+                <a
+                  rel="noreferrer"
+                  target="_blank"
+                  href={result}
+                  download={file.name}
+                >
+                  Download result in .{fileExtension}
+                </a>
+              </>
             )}
           </Grid>
         </Grid>

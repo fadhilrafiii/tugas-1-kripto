@@ -3,7 +3,7 @@ import os
 import math
 
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
-from utils.string import convert_from_binary, split_binary_string, split_string
+from utils.string import split_string
 from .Image import ImageSteganography
 
 class VideoSteganography:

@@ -1,11 +1,10 @@
 import os
 import shutil
-import base64
-import cv2
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
 from firebase_admin import storage, credentials, initialize_app
+from google.cloud.storage import Bucket
 
 # Import utils
 from utils.helper import *
@@ -20,6 +19,7 @@ from cipher.rc4 import RC4
 
 from steganography.Video import VideoSteganography
 from steganography.Image import ImageSteganography
+from steganography.Audio import AudioSteganography
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -28,7 +28,7 @@ from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
 app = Flask(__name__)
 cred = credentials.Certificate(os.path.join(os.getcwd(), "kripto.json"))
 initialize_app(cred, { 'storageBucket': 'hokkyss-test-project.appspot.com' })
-bucket = storage.bucket()
+bucket: Bucket = storage.bucket()
 
 # SET CORS
 cors = CORS(app)
@@ -120,18 +120,24 @@ def steganography():
       stego.hide(message)
     else:
       return jsonify({ 'result': convert_from_binary(stego.extract()) })
-  else:
+  elif (fileExtension == 'avi'):
     stego = VideoSteganography(media.filename, length)
     if (hide):
       stego.hide(message)
     else:
       return jsonify({ 'result': convert_from_binary(stego.extract()) })
+  elif (fileExtension == 'wav'):
+    stego = AudioSteganography(media.filename, length)
+    if (hide):
+      stego.hide(message)
+    else:
+      return jsonify({ 'result': convert_from_binary(stego.extract()) })
 
-  blob = bucket.blob(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))
+  blob = bucket.blob(media.filename)
   blob.upload_from_filename(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))
   blob.make_public()
   
-  value = stego.PSNR(cv2.imread(os.path.join(TEMPORARY_INPUT_DIR, media.filename), cv2.IMREAD_COLOR), cv2.imread(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename)))
+  value = stego.PSNR()
 
   return jsonify({ 'result': blob.public_url, 'value': value })
 

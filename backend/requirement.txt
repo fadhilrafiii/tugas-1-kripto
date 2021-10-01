@@ -99,6 +99,7 @@ typing-extensions==3.10.0.0
 uritemplate==3.0.1
 urllib3==1.26.7
 virtualenv==20.7.2
+Wave==0.0.2
 wcwidth==0.2.5
 webencodings==0.5.1
 Werkzeug==2.0.1

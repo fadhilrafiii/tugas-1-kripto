@@ -158,14 +158,6 @@ export default function Steganography() {
                   <img src={URL.createObjectURL(file)} alt="Uploaded Media" />
                 )}
                 {type === 1 && <AudioPlayer src={URL.createObjectURL(file)} />}
-                {/* {type === 2 && (
-                <VideoPlayer
-                  controls={true}
-                  src={result}
-                  poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
-                  height="360"
-                />
-              )} */}
               </div>
             )}
           </Grid>
@@ -191,14 +183,6 @@ export default function Steganography() {
                   <div className="preview-media">
                     {type === 0 && <img src={result} alt="Uploaded Media" />}
                     {type === 1 && <AudioPlayer src={result} />}
-                    {/* {type === 2 && (
-                    <VideoPlayer
-                      controls={true}
-                      src={result}
-                      poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
-                      height="360"
-                    />
-                  )} */}
                   </div>
                 )}
               </>

@@ -19,6 +19,7 @@ export default function Steganography() {
   const [messageLength, setMessageLength] = useState(0);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [value, setValue] = useState(null);
 
   const handleSwap = useCallback(() => setSwap(!swap), [swap]);
 
@@ -30,6 +31,7 @@ export default function Steganography() {
   const onChangeFile = useCallback((e) => {
     setFile(e.target.files[0]);
     setResult(null);
+    setValue(null);
   }, []);
 
   const fileExtension = useMemo(
@@ -54,13 +56,14 @@ export default function Steganography() {
       })
       .then((res) => {
         setResult(res.data.result);
+        setValue(res.data.value);
       })
       .finally(() => setLoading(false));
   }, [file, fileExtension, swap, message, messageLength]);
 
   return (
     <Grid item container className="steganography">
-      {swap && result && (
+      {swap && result && value &&(
         <Alert type="info" message={result} setMessage={() => null} />
       )}
       <Grid item container className="box">
@@ -93,7 +96,7 @@ export default function Steganography() {
           </Grid>
           <Grid item container lg={5} className="right">
             <h3>{swap ? "Media" : "Stego Media"}</h3>
-            {result && (
+            {result && value && (
               <>
                 <a
                   rel="noreferrer"
@@ -103,6 +106,7 @@ export default function Steganography() {
                 >
                   Download result in .{fileExtension}
                 </a>
+                <p>PSNR: {value}</p>
               </>
             )}
           </Grid>

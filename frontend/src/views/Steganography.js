@@ -12,6 +12,9 @@ import {
 } from "@material-ui/core";
 import { InsertDriveFile, Lock, LockOpen, SwapHoriz } from "@material-ui/icons";
 import axios from "axios";
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+import VideoPlayer from 'react-video-js-player';
 
 import { Alert } from "components";
 import { API_URL } from "constant";
@@ -56,8 +59,8 @@ export default function Steganography() {
   );
 
   const formatType = () => {
-    if (type === 0) return "image/png";
-    if (type === 1) return "audio/wav";
+    if (type === 0) return ".png";
+    if (type === 1) return ".wav";
     if (type === 2) return ".avi,.bmp";
 
     return "image/*";
@@ -110,6 +113,7 @@ export default function Steganography() {
               id="demo-simple-select-filled"
               value={type}
               onChange={(e) => {
+                setFile(null);
                 setResult(null);
                 setType(e.target.value)
               }}
@@ -154,18 +158,21 @@ export default function Steganography() {
             )}
             {file && <div className="preview-media">
               {type === 0 && (
-                <img src={URL.createObjectURL(file) } alt="Uploaded Media" />
+                <img src={URL.createObjectURL(file)} alt="Uploaded Media" />
               )}
               {type === 1 && (
-                <audio src={URL.createObjectURL(file) } type="audio/*" controls>
-                  Your browser does not support the audio element.
-                </audio>
+                <AudioPlayer
+                  src={URL.createObjectURL(file)}
+                />
               )}
-              {type === 2 && (
-                <video src={URL.createObjectURL(file) } type="video/*" controls>
-                  Your browser does not support the video element.
-                </video>
-              )}
+              {/* {type === 2 && (
+                <VideoPlayer
+                  controls={true}
+                  src={result}
+                  poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
+                  height="360"
+                />
+              )} */}
             </div>}
           </Grid>
           <Grid item container lg={2} className="swap-btn">
@@ -191,15 +198,18 @@ export default function Steganography() {
                     <img src={result} alt="Uploaded Media" />
                   )}
                   {type === 1 && (
-                    <audio src={result} type="audio/*" controls>
-                      Your browser does not support the audio element.
-                    </audio>
+                    <AudioPlayer
+                      src={result}
+                    />
                   )}
-                  {type === 2 && (
-                    <video src={result} type="video/*" controls>
-                      Your browser does not support the video element.
-                    </video>
-                  )}
+                  {/* {type === 2 && (
+                    <VideoPlayer
+                      controls={true}
+                      src={result}
+                      poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
+                      height="360"
+                    />
+                  )} */}
                 </div>}
               </>
             )}

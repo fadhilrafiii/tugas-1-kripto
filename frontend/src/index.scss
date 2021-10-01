@@ -127,6 +127,10 @@ html {
 .preview-media {
   max-width: 100%;
 
+  @media (max-width: 1279px) {
+    margin-bottom: 24px !important;
+  }
+
   img {
     height: 300px;
     object-fit: contain;

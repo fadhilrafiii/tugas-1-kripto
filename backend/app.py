@@ -107,8 +107,8 @@ def steganography():
   media: FileStorage = request.files.get("media")
   fileExtension: str = request.form.get("extension")
 
-  if (fileExtension != 'bmp' and fileExtension != 'wav' and fileExtension != 'png'):
-    return jsonify({ 'error': 'invalid file format!' })
+  if (fileExtension != 'bmp' and fileExtension != 'avi' and fileExtension != 'png'):
+    return jsonify({ 'error': 'invalid file format!' }), 400
 
   file_path = os.path.join(TEMPORARY_INPUT_DIR, media.filename)
   media.save(file_path)

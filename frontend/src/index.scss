@@ -124,11 +124,33 @@ html {
   background-color: $secondary;
 }
 
+.preview-media {
+  max-width: 100%;
+
+  @media (max-width: 1279px) {
+    margin-bottom: 24px !important;
+  }
+
+  img {
+    height: 300px;
+    object-fit: contain;
+  }
+}
+
 .container {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  position: relative;
   // min-height: calc(100vh - 60px);
+
+  @media (max-width: 1279px) {
+    padding-top: 80px;
+
+    .dropdown-type {
+      top:  0;
+    }
+  }
 
   @media (max-width: 1084px) {
     flex-direction: column;
@@ -266,6 +288,10 @@ textarea {
   overflow: auto !important;
 }
 
+.MuiCircularProgress-root svg {
+  color: white !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -375,6 +401,10 @@ textarea {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.2);
   }
+}
+.dropdown-type {
+  position: absolute !important;
+  width: 300px !important;
 }
 
 .steganography {

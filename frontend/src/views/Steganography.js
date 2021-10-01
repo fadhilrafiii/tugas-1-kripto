@@ -5,14 +5,23 @@ import {
   Grid,
   IconButton,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { InsertDriveFile, Lock, LockOpen, SwapHoriz } from "@material-ui/icons";
 import axios from "axios";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
+import VideoPlayer from "react-video-js-player";
 
 import { Alert } from "components";
 import { API_URL } from "constant";
 
 export default function Steganography() {
+  const typeOpt = ["Image", "Audio", "Video"];
+
   const [swap, setSwap] = useState(false);
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
@@ -20,6 +29,10 @@ export default function Steganography() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [value, setValue] = useState(null);
+  const [type, setType] = useState(0);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSwap = useCallback(() => {
     setSwap(!swap);
@@ -43,6 +56,14 @@ export default function Steganography() {
     [file]
   );
 
+  const formatType = () => {
+    if (type === 0) return ".png";
+    if (type === 1) return ".wav";
+    if (type === 2) return ".avi,.bmp";
+
+    return "image/*";
+  };
+
   const onSubmit = useCallback(() => {
     setLoading(true);
 
@@ -61,22 +82,63 @@ export default function Steganography() {
       .then((res) => {
         setResult(res.data.result);
         setValue(res.data.value);
+        setSuccessMessage("Success hiding message in image!");
+      })
+      .catch((err) => {
+        setErrorMessage(err.error || "Invalid file format!");
       })
       .finally(() => setLoading(false));
   }, [file, fileExtension, swap, message, messageLength]);
 
   return (
     <Grid item container className="steganography">
-      {swap && result && (
-        <Alert type="info" message={result} setMessage={() => setResult("")} />
-      )}
+      <Alert
+        type={successMessage ? "success" : "error"}
+        message={successMessage || errorMessage}
+        setMessage={() => {
+          setErrorMessage("");
+          setSuccessMessage("");
+        }}
+      />
       <Grid item container className="box">
         <Grid item container className="container">
+          <FormControl variant="filled" className="dropdown-type">
+            <InputLabel id="demo-simple-select-filled-label">
+              File type
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              value={type}
+              onChange={(e) => {
+                setFile(null);
+                setResult(null);
+                setType(e.target.value);
+              }}
+              MenuProps={{
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                transformOrigin: {
+                  vertical: "top",
+                  horizontal: "left",
+                },
+                getContentAnchorEl: null,
+              }}
+            >
+              {typeOpt.map((label, index) => (
+                <MenuItem key={index} value={index}>
+                  {label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Grid item container lg={5} className="left">
             <Grid item container wrap="nowrap" className="title-input mb">
               <h3>{swap ? "Stego Media" : "Media"}</h3>
               <input
-                accept=".bmp,.avi,.png,.wav"
+                accept={formatType()}
                 style={{ display: "none" }}
                 id="raised-button-file"
                 multiple
@@ -91,6 +153,22 @@ export default function Steganography() {
             </Grid>
             {file?.name && (
               <div className="error mb">{`You uploaded ${file.name}!`}</div>
+            )}
+            {file && (
+              <div className="preview-media">
+                {type === 0 && (
+                  <img src={URL.createObjectURL(file)} alt="Uploaded Media" />
+                )}
+                {type === 1 && <AudioPlayer src={URL.createObjectURL(file)} />}
+                {/* {type === 2 && (
+                <VideoPlayer
+                  controls={true}
+                  src={result}
+                  poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
+                  height="360"
+                />
+              )} */}
+              </div>
             )}
           </Grid>
           <Grid item container lg={2} className="swap-btn">
@@ -111,6 +189,20 @@ export default function Steganography() {
                   Download result in .{fileExtension}
                 </a>
                 <p>PSNR: {value}</p>
+                {result && (
+                  <div className="preview-media">
+                    {type === 0 && <img src={result} alt="Uploaded Media" />}
+                    {type === 1 && <AudioPlayer src={result} />}
+                    {/* {type === 2 && (
+                    <VideoPlayer
+                      controls={true}
+                      src={result}
+                      poster="https://lh3.googleusercontent.com/proxy/JAVenCXMvp_bIckHoykTJktsVJFV6MPvg2Q_htN6LQWcliajDICwnzivQjxUR_BM7LYWzlL7iBELv1f8y8U-n7OPa-_t9g"
+                      height="360"
+                    />
+                  )} */}
+                  </div>
+                )}
               </>
             )}
           </Grid>

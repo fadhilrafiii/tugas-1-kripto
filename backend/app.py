@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
 from firebase_admin import storage, credentials, initialize_app
+from google.cloud.storage import Bucket
 
 # Import utils
 from utils.helper import *
@@ -27,7 +28,7 @@ from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
 app = Flask(__name__)
 cred = credentials.Certificate(os.path.join(os.getcwd(), "kripto.json"))
 initialize_app(cred, { 'storageBucket': 'hokkyss-test-project.appspot.com' })
-bucket = storage.bucket()
+bucket: Bucket = storage.bucket()
 
 # SET CORS
 cors = CORS(app)
@@ -132,7 +133,7 @@ def steganography():
     else:
       return jsonify({ 'result': convert_from_binary(stego.extract()) })
 
-  blob = bucket.blob(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))
+  blob = bucket.blob(media.filename)
   blob.upload_from_filename(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))
   blob.make_public()
   

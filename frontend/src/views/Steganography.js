@@ -14,13 +14,12 @@ import { InsertDriveFile, Lock, LockOpen, SwapHoriz } from "@material-ui/icons";
 import axios from "axios";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-import VideoPlayer from "react-video-js-player";
 
 import { Alert } from "components";
 import { API_URL } from "constant";
 
 export default function Steganography() {
-  const typeOpt = ["Image", "Audio", "Video"];
+  const typeOpt = ["Image", "Audio"];
 
   const [swap, setSwap] = useState(false);
   const [file, setFile] = useState(null);
@@ -57,11 +56,8 @@ export default function Steganography() {
   );
 
   const formatType = () => {
-    if (type === 0) return ".png";
+    if (type === 0) return ".png,.bmp";
     if (type === 1) return ".wav";
-    if (type === 2) return ".avi,.bmp";
-
-    return "image/*";
   };
 
   const onSubmit = useCallback(() => {
@@ -82,10 +78,12 @@ export default function Steganography() {
       .then((res) => {
         setResult(res.data.result);
         setValue(res.data.value);
-        setSuccessMessage("Success hiding message in image!");
+        setSuccessMessage(
+          swap ? res.data.result : "Success hiding message in image!"
+        );
       })
       .catch((err) => {
-        setErrorMessage(err.error || "Invalid file format!");
+        setErrorMessage(err.error || "An error has occured!");
       })
       .finally(() => setLoading(false));
   }, [file, fileExtension, swap, message, messageLength]);

@@ -63,7 +63,7 @@ export default function Steganography() {
 
   return (
     <Grid item container className="steganography">
-      {swap && result && value &&(
+      {swap && result && value && (
         <Alert type="info" message={result} setMessage={() => null} />
       )}
       <Grid item container className="box">
@@ -72,7 +72,7 @@ export default function Steganography() {
             <Grid item container wrap="nowrap" className="title-input mb">
               <h3>{swap ? "Stego Media" : "Media"}</h3>
               <input
-                accept=".bmp,.avi,.png"
+                accept=".bmp,.avi,.png,.wav"
                 style={{ display: "none" }}
                 id="raised-button-file"
                 multiple

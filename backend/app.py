@@ -1,8 +1,7 @@
 import os
 import shutil
-import base64
 import cv2
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
 from firebase_admin import storage, credentials, initialize_app
@@ -20,6 +19,7 @@ from cipher.rc4 import RC4
 
 from steganography.Video import VideoSteganography
 from steganography.Image import ImageSteganography
+from steganography.Audio import AudioSteganography
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -106,7 +106,7 @@ def steganography():
   media: FileStorage = request.files.get("media")
   fileExtension: str = request.form.get("extension")
 
-  if (fileExtension != 'bmp' and fileExtension != 'avi' and fileExtension != 'png'):
+  if (fileExtension != 'bmp' and fileExtension != 'wav' and fileExtension != 'png'):
     return jsonify({ 'error': 'invalid file format!' })
 
   file_path = os.path.join(TEMPORARY_INPUT_DIR, media.filename)
@@ -120,8 +120,14 @@ def steganography():
       stego.hide(message)
     else:
       return jsonify({ 'result': convert_from_binary(stego.extract()) })
-  else:
+  elif (fileExtension == 'avi'):
     stego = VideoSteganography(media.filename, length)
+    if (hide):
+      stego.hide(message)
+    else:
+      return jsonify({ 'result': convert_from_binary(stego.extract()) })
+  elif (fileExtension == 'wav'):
+    stego = AudioSteganography(media.filename, length)
     if (hide):
       stego.hide(message)
     else:

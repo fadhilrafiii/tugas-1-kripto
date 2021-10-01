@@ -21,7 +21,11 @@ export default function Steganography() {
   const [result, setResult] = useState(null);
   const [value, setValue] = useState(null);
 
-  const handleSwap = useCallback(() => setSwap(!swap), [swap]);
+  const handleSwap = useCallback(() => {
+    setSwap(!swap);
+    setResult(null);
+    setValue(null);
+  }, [swap]);
 
   const onChangeLength = useCallback(
     (e) => setMessageLength(e.target.value),
@@ -63,8 +67,8 @@ export default function Steganography() {
 
   return (
     <Grid item container className="steganography">
-      {swap && result && value && (
-        <Alert type="info" message={result} setMessage={() => null} />
+      {swap && result && (
+        <Alert type="info" message={result} setMessage={() => setResult("")} />
       )}
       <Grid item container className="box">
         <Grid item container className="container">

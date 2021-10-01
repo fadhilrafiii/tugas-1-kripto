@@ -1,5 +1,6 @@
 import os
 import shutil
+from typing import Union
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
@@ -114,24 +115,19 @@ def steganography():
 
   message = convert_to_binary(message)
 
+  stego: Union[ImageSteganography, VideoSteganography, AudioSteganography]
+
   if (fileExtension == 'bmp' or fileExtension == 'png'):
     stego = ImageSteganography(media.filename, length)
-    if (hide):
-      stego.hide(message)
-    else:
-      return jsonify({ 'result': convert_from_binary(stego.extract()) })
   elif (fileExtension == 'avi'):
     stego = VideoSteganography(media.filename, length)
-    if (hide):
-      stego.hide(message)
-    else:
-      return jsonify({ 'result': convert_from_binary(stego.extract()) })
   elif (fileExtension == 'wav'):
     stego = AudioSteganography(media.filename, length)
-    if (hide):
-      stego.hide(message)
-    else:
-      return jsonify({ 'result': convert_from_binary(stego.extract()) })
+  
+  if (hide):
+    stego.hide(message)
+  else:
+    return jsonify({ 'result': convert_from_binary(stego.extract()) })
 
   blob = bucket.blob(media.filename)
   blob.upload_from_filename(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))

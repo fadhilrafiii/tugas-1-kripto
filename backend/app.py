@@ -1,6 +1,5 @@
 import os
 import shutil
-import cv2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.datastructures import FileStorage
@@ -137,7 +136,7 @@ def steganography():
   blob.upload_from_filename(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename))
   blob.make_public()
   
-  value = stego.PSNR(cv2.imread(os.path.join(TEMPORARY_INPUT_DIR, media.filename), cv2.IMREAD_COLOR), cv2.imread(os.path.join(TEMPORARY_OUTPUT_DIR, media.filename)))
+  value = stego.PSNR()
 
   return jsonify({ 'result': blob.public_url, 'value': value })
 

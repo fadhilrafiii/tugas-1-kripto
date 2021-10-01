@@ -42,3 +42,6 @@ class AudioSteganography:
         output_file.writeframes(bytes(self.result))
 
         output_file.close()
+    
+    def PSNR(self):
+        return 1

@@ -1,5 +1,7 @@
 import os
 from wave import Wave_read, Wave_write, open as open_audio
+from numpy import array, float64, mean
+from math import log10, sqrt, pow
 
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
 
@@ -43,5 +45,15 @@ class AudioSteganography:
 
         output_file.close()
     
-    def PSNR(self):
-        return 1
+    def PSNR(self) -> float:
+        summation = 0  
+        n = len(self.result) 
+        MSE = 0
+        for i in range (0,n): 
+            difference = self.content[i] - self.result[i]  
+            squared_difference = difference**2  
+            summation = summation + squared_difference  
+            MSE = summation/n  
+        MAXVAL = 255
+        psnr = 20*log10(MAXVAL/MSE)
+        return psnr

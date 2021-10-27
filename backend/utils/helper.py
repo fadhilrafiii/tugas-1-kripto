@@ -43,3 +43,49 @@ def determinant(matrix):
     determinant += ((-1.0) ** c) * matrix[0][c] * determinant(get_matrix_minor(matrix, 0, c))
 
   return determinant
+
+def gcd(a, b):
+  while (b):
+    a, b = b, a % b
+
+  return a
+
+def is_coprime(a, b):
+  return gcd(a, b) == 1
+
+def mod_inv(a,m):
+  m0 = m
+  y = 0
+  x = 1
+
+  if (m == 1):
+      return 0
+
+  while (a > 1):
+      q = a // m
+      t = m
+      m = a % m
+      a = t
+      t = y
+
+      y = x - q * y
+      x = t
+
+  if (x < 0):
+      x = x + m0
+
+  return x
+
+def power_mod(base, exponent, modulus):
+  if (modulus == 1): 
+    return 0
+  
+  result = 1
+  base = base % modulus;
+  while (exponent > 0):
+    if (exponent % 2 == 1):
+      result = (result * base) % modulus
+    exponent = exponent >> 1;
+    base = (base * base) % modulus
+
+  return result;

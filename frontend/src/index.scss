@@ -65,9 +65,12 @@ html {
       color: white;
       margin: 0 12px;
       font-size: 16px;
-
-      &.active,
+      
       &:hover {
+        text-decoration: underline;
+        color: white;
+      }
+      &.active {
         text-decoration: underline;
         color: $ternary;
       }
@@ -174,6 +177,7 @@ html {
     align-self: center;
     justify-content: center;
     min-height: unset;
+    margin-top: 40px;
 
     button {
       color: $primary !important;
@@ -222,6 +226,10 @@ html {
   }
 }
 
+.transparent {
+  background-color: transparent !important;
+}
+
 .cryptography {
   position: relative;
 
@@ -230,6 +238,15 @@ html {
     margin-bottom: 20px;
     background-color: white;
     border-radius: 4px;
+
+    &.center {
+      margin: 20px auto;
+    }
+
+    &.unset-width {
+      width: unset;
+      margin: 0;
+    }
   }
 }
 
@@ -318,6 +335,11 @@ textarea {
   color: maroon;
 }
 
+.error-key {
+  color: maroon;
+  margin: 0 auto;
+}
+
 .mb {
   margin-bottom: 20px !important;
 }
@@ -329,6 +351,15 @@ textarea {
   left: 50%;
   transform: translateX(-50%);
   z-index: 2000;
+}
+
+.title-page {
+  color: $primary;
+  margin: 0 auto 30px;
+  height: fit-content;
+  display: block;
+  text-align: center;
+  width: 100%;
 }
 
 .submit-btn {

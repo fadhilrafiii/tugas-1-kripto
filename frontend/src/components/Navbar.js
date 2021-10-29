@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 const MenuList = [
   {
-    route: "/cryptography",
-    text: "Cryptography",
+    route: "/classic",
+    text: "Classic",
   },
   {
     route: "/rc4",
@@ -12,6 +12,10 @@ const MenuList = [
   {
     route: "/steganography",
     text: "Steganography",
+  },
+  {
+    route: "/public-key",
+    text: "Public Key",
   },
 ];
 
@@ -25,7 +29,11 @@ export const Navbar = () => {
           <a
             key={route}
             href={route}
-            className={route === window.location.pathname ? "active" : ""}
+            className={
+              route === window.location.pathname || (text === 'Classic' && window.location.pathname === '/') 
+                ? "active" 
+                : ""
+            }
           >
             {text}
           </a>

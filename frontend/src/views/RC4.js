@@ -76,6 +76,7 @@ const RC4 = () => {
         }}
       />
       <Grid item container className="box">
+        <h1 className="title-page">RC4 Algorithm</h1> 
         <PairTextArea
           type="rc4"
           swap={swap}

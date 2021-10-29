@@ -99,6 +99,7 @@ export default function Steganography() {
         }}
       />
       <Grid item container className="box">
+        <h1 className="title-page">Steganography</h1> 
         <Grid item container className="container">
           <FormControl variant="filled" className="dropdown-type">
             <InputLabel id="demo-simple-select-filled-label">

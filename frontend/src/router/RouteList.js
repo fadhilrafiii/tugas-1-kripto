@@ -1,6 +1,7 @@
 export const routes = {
   root: "/",
-  cryptography: "/cryptography",
+  classic: "/classic",
   rc4: "/rc4",
   steganography: "/steganography",
+  publicKey: "/public-key"
 };

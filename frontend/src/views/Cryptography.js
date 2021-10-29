@@ -183,6 +183,7 @@ function Cryptography() {
         }}
       />
       <Grid item container className="box">
+        <h1 className="title-page">Classical Algorithm</h1> 
         <PairTextArea
           type="crypto"
           swap={swap}

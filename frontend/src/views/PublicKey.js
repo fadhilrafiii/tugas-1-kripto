@@ -10,7 +10,7 @@ import {
   Button,
   CircularProgress,
 } from "@material-ui/core";
-import { Lock, LockOpen } from "@material-ui/icons";
+import { Lock, LockOpen, VpnKey } from "@material-ui/icons";
 import axios from "axios";
 import isCoprime from "is-coprime";
 import querystring from "querystring";
@@ -202,7 +202,7 @@ function Cryptography() {
               loading ? (
                 <CircularProgress size={15} />
               ) : swap ? (
-                <Lock />
+                <VpnKey fontSize="16" />
               ) : (
                 <LockOpen />
               )
@@ -229,13 +229,9 @@ function Cryptography() {
             size="large"
             className="submit-btn"
             startIcon={
-              loading ? (
-                <CircularProgress size={15} />
-              ) : swap ? (
-                <Lock />
-              ) : (
-                <LockOpen />
-              )
+              loading 
+                ? <CircularProgress size={15} />
+                : <Lock />
             }
           >
             {swap ? "ENCRYPT" : "DECRYPT"}

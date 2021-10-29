@@ -27,6 +27,7 @@ class RSA:
     for char in plaintext:
       enc.append(power_mod(ord(char), pub_key[0], pub_key[1]))
 
+
     return enc
   
   def decrypt(self, ciphertext):

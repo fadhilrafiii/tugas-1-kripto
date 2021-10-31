@@ -121,3 +121,11 @@ def point_subtract(P, Q, p, a):
   Q = (Q[0], -1 * Q[1] % p)
   
   return point_add(P, Q, p, a)
+
+def get_prime_factor(x):
+  factor = []
+  for i in range(math.sqrt(x)):
+    if (x % i == 0):
+      factor.append(i)
+
+  return factor

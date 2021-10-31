@@ -38,7 +38,23 @@ class RSA:
 
     return dec
 
-# a = RSA(853687,	853693,	853703)
-# dec = a.encrypt('HOME')
+def encrypt_RSA(plaintext, pub_key):
+  enc = []
+  for char in plaintext:
+    enc.append(power_mod(ord(char), pub_key[0], pub_key[1]))
+
+  return enc
+
+def decrypt_RSA(ciphertext, pri_key):
+  if (isinstance(ciphertext, str)):
+    ciphertext = map(int, ciphertext.split(' '))
+
+  dec = ''
+  for code in ciphertext:
+    dec += chr(power_mod(code, pri_key[0], pri_key[1]))
+
+  return dec
+# # a = RSA(853687,	853693,	853703)
+# dec = encrypt_RSA('HOME', (127, 1052651))
 # print(dec)
-# print(a.decrypt(dec), 'decrypt')
+# print(decrypt_RSA(dec, (281263, 1052651)), 'decrypt')

@@ -65,12 +65,16 @@ class ECC:
     return encoded
 
   def encrypt(self, plaintext, k, P, pb):
+    print(plaintext, P, pb)
     encoded = self.get_encoded_char()
+    print(plaintext, P, pb)
+
     enc = {
       'text': '',
       'encoding': []
     }
     for char in plaintext:
+      print(char, P, pb)
       kb = point_mult(k, P, self.p, self.a)
       kP = point_mult(k, pb, self.p, self.a)
       pc = (kb, point_add(encoded[char], kP, self.p, self.a))

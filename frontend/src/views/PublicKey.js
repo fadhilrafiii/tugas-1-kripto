@@ -37,6 +37,19 @@ function Cryptography() {
     public: null,
     private: null,
   });
+  const [myKey, setMyKey] = useState({
+    public: null,
+    private: null,
+  });
+  const [elGamalK, setElGamalK] = useState(1)
+  const [ECCkey, setECCkey] = useState({
+    a: '',
+    b: '',
+    p: '',
+    k: '',
+    basePoint: ''
+  })
+
   const [eccPoints, setEccPoints] = useState([]);
   const [selectedBasePoint, setSelectedBasePoints] = useState('');
 
@@ -47,7 +60,8 @@ function Cryptography() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorKey, setErrorKey] = useState('')
+  const [errorKey, setErrorKey] = useState('');
+  const [errorK, setErrorK] = useState('');
 
   const handleSwap = () => {
     if (result) setData(result);
@@ -81,9 +95,8 @@ function Cryptography() {
     else if (e.target.value === 2) {
       setCipherKey({
         p: 7,
-        g: 11,
-        x: 13,
-        k: 17,
+        g: 3,
+        x: 5,
       });
     }
     else if (e.target.value === 3) {
@@ -140,8 +153,15 @@ function Cryptography() {
       .post(`${API_URL}/generate-key?${query}`, payload)
       .then((res) => {
         setLoading(false);
-        setSuccessMessage('Generate key success!')
-        setKey(res.data)
+        setSuccessMessage('Generate key success!');
+        const data = res.data;
+        Object.keys(data).forEach((key) => {
+          if (key !== 'string') {
+            data[key] = data[key].join(', ')
+          }
+        })
+        setKey(data)
+        setMyKey(data)
       })
       .catch((err) => {
         setLoading(false);
@@ -189,18 +209,37 @@ function Cryptography() {
       if (!isCoprimeEPQ) return setErrorKey(`E should be coprime with P*Q = ${p*q}`);
     }
     else if (cipher === 2) {
-
+      const { p, g, x} = cipherKey;
+      if (!isPrime(p)) return setErrorKey('P should be prime number!');
+      if (g >= p) return setErrorKey('G should be less than P!');
+      if (x > p - 2 || x < 1) return setErrorKey('X should be natural number less than P - 1!');
     }
     else if (cipher === 3) {
       if (!isPrime(cipherKey.p)) return setErrorKey(`P should be prime!`);
       if (cipherKey.m < 2) return setErrorKey(`M should be greater than 1!`);
+      if (cipherKey.m > eccPoints.count) {
+        return setErrorKey(`Max value for M is ${eccPoints.count} because there's only ${eccPoints.count} points`);
+      }
     }
 
     return setErrorKey('');
-  }, [cipherKey, cipher]);
+  }, [cipherKey, cipher, eccPoints.count]);
 
-  const generateECCEq = useMemo(() => {
-    const { a, b, p } = cipherKey;
+  const generateErrorK = useCallback(() => {
+    if (cipher === 2) {
+      if (elGamalK < 1 || elGamalK > cipherKey.p - 2) {
+        return setErrorK('K should be natural number less than P - 1!')
+      }
+    }
+    else if (cipher === 3) {
+      
+    }
+
+    return setErrorK('')
+  }, [elGamalK, cipherKey.p, cipher]);
+
+  const generateECCEq = useCallback((key) => {
+    const { a, b, p } = key;
     const firstEl = <span>x<sup>3</sup></span>
     const secondEl = a
       ? <span>{a > 0 ? ` + ${a > 1 ? a : ''}x` : ` ${a > 1 ? a : ''}x`}<sup>2</sup></span>
@@ -208,7 +247,92 @@ function Cryptography() {
     const thirdEl = b ? <span>{b > 0 ? ` + ${b}` : ` ${b}`}</span> : ''
 
     return <span>{firstEl}{secondEl}{thirdEl} mod {p}</span>
-  }, [cipherKey])
+  }, []);
+
+  const encrypt = async () => {
+    const query = querystring.stringify({
+      type: cipherOpt[cipher],
+      method: 'encrypt'
+    });
+    let payload = {
+      pubkey: key.public.toString().split(',').map((val) => parseInt(val.trim())),
+      plaintext: data,
+    };
+    if (cipher === 2) {
+      payload.k = parseInt(elGamalK);
+    }
+    if (cipher === 3) {
+      payload.a = parseInt(ECCkey.a);
+      payload.b = parseInt(ECCkey.b);
+      payload.p = parseInt(ECCkey.p);
+      payload.k = parseInt(ECCkey.k);
+      payload.base_point = ECCkey.basePoint.split(',').map((val) => parseInt(val.trim()));
+    }
+
+    setLoading(true)
+    await axios
+      .post(`${API_URL}/public-key?${query}`, payload)
+      .then((res) => {
+        setLoading(false);
+        setSuccessMessage('Encryption success!');
+        setResult(res.data.data)
+      })
+      .catch((err) => {
+        setLoading(false);
+        setErrorMessage(
+          err.response?.data?.error
+            ? err.response?.data?.error.split('"')[1] || err.response?.data?.error
+            : "Encryption failed!"
+        );
+      });
+  }
+
+  const decrypt = async () => {
+    const query = querystring.stringify({
+      type: cipherOpt[cipher],
+      method: 'decrypt'
+    });
+
+    const payload = {
+      prikey: key.private.split(',').map((val) => parseInt(val.trim())),
+      ciphertext: data
+    };
+
+    setLoading(true)
+    await axios
+      .post(`${API_URL}/public-key?${query}`, payload)
+      .then((res) => {
+        setLoading(false);
+        setSuccessMessage('Decryption success!');
+        setResult(res.data.data)
+      })
+      .catch((err) => {
+        setLoading(false);
+        setErrorMessage(
+          err.response?.data?.error
+            ? err.response?.data?.error.split('"')[1] || err.response?.data?.error
+            : "Decryption failed!"
+        );
+      });
+  }
+
+  const handleChangeMyKey = (e) => {
+    let { name, value } = e.target;
+
+    setMyKey((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  };
+
+  const handleChangeECCkey = (e) => {
+    let { name, value } = e.target;
+
+    setECCkey((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   useEffect(() => {
     const interval = setTimeout(() => {
@@ -223,6 +347,13 @@ function Cryptography() {
     }, 1000)
     return () => clearTimeout(interval)
   }, [getAvailableECCPoints])
+
+  useEffect(() => {
+    const interval = setTimeout(() => {
+      generateErrorK()
+    }, 1000)
+    return () => clearTimeout(interval)
+  }, [generateErrorK])
 
   return (
     <Grid item container className="cryptography">
@@ -294,14 +425,14 @@ function Cryptography() {
           </Grid>
           {(cipher === 3 && cipherKey.p > 1021) && (
             <div className="warning-key" style={{ marginBottom: 5 }}>
-              Warning: it will be lag or error if you choose too large value for P!
+             Warning: it will be lag or error if you choose too large value for P!
             </div>
           )}
           <div className="error-key" style={{ marginBottom: 25 }}>{errorKey}</div>
         </Grid>
         {cipher === 3 && isPrime(cipherKey.p) && (
           <Grid container direction="column" alignItems="center">
-            <div>Elliptic Curve: {generateECCEq}</div>
+            <div>Elliptic Curve: {generateECCEq(cipherKey)}</div>
             <FormControl variant="filled" className="dropdown center">
               <InputLabel id="demo-simple-select-filled-label">
                 Available Points
@@ -365,7 +496,7 @@ function Cryptography() {
           <br />
           {key.public && (
             <div className="download" onClick={() => downloadTxtFile(key.public)}>
-              {`Download ${cipher === 3 ? 'Sender' : ''} public key in .txt`}
+              {`Download ${cipher === 3 ? 'sender' : ''} public key in .txt`}
             </div>
           )}
           {key.private && (
@@ -378,18 +509,131 @@ function Cryptography() {
           type="crypto"
           swap={swap}
           cipher={cipher}
-          data={data}
+          data={Array.isArray(data) ? data.join(' ') : data}
           setData={setData}
-          result={result}
+          result={Array.isArray(result) ? result.join(' ') : result}
           onSwap={handleSwap}
           onDownload={downloadTxtFile}
         />
         <Grid item container direction="column" className="submit-section">
+          {cipher === 2 && (
+            <>
+              <FormControl className="dropdown" style={{ marginBottom: 0 }}>
+                <TextField
+                  variant="filled"
+                  value={elGamalK}
+                  type="number"
+                  name='k'
+                  label= 'K'
+                  placeholder={`Choose K (1 <= k <= P - 2)`}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => setElGamalK(e.target.value)}
+                  InputLabelProps={{ shrink: elGamalK ? true : false }}
+                />
+              </FormControl>
+              <div className="error-key" style={{ marginBottom: 15 }}>{errorK}</div>
+            </>
+          )}
+          {cipher === 3 && (
+            <>
+              <h3 className="title-page" style={{ width: 'unset' }}>Curve Equation</h3>
+              <Grid container spacing={2} justifyContent="center">
+                {Object.keys(ECCkey).map((key) => {
+                  if (key === 'a' || key === 'b' || key === 'p') {
+                    return (
+                      <Grid item md={3}>
+                        <FormControl className="dropdown">
+                          <TextField
+                            key={key}
+                            variant="filled"
+                            value={ECCkey[key] || ''}
+                            type="string"
+                            name={key}
+                            label={key.toUpperCase()}
+                            placeholder={`Choose ${key.toUpperCase()}`}
+                            onFocus={(e) => e.target.select()}
+                            onChange={handleChangeECCkey}
+                            error={key === 'p' && ECCkey[key] < 128}
+                          />
+                        </FormControl>
+                      </Grid>
+                    );
+                  }
+
+                  return <></>
+                })}
+              </Grid>
+              <div className="error-key" style={{ fontSize: 12, margin: '-15px auto 25px', textAlign: 'center'}}>
+                {(parseInt(ECCkey.p) < 128) || !isPrime(parseInt(ECCkey.p))
+                  ? 'P should be prime number greater than 128 so ciphertext can be encoded to ASCII'
+                  : null}
+              </div>
+              {(ECCkey.a && ECCkey.b && ECCkey.p) && (
+                <h3 className="title-page" style={{ width: 'unset', margin: '0 auto', borderBottom: '1px solid black' }}>
+                  {generateECCEq(ECCkey)}
+                </h3>
+              )}
+              <h3 className="title-page" style={{ width: 'unset', marginBottom: 5 }}>Key</h3>
+              {Object.keys(ECCkey).map((key) => {
+                if ((key === 'basePoint' && !swap) || key === 'a' || key === 'b' || key === 'p') {
+                  return <></>
+                }
+
+                return (
+                  <FormControl className="dropdown" key={key}>
+                    <TextField
+                      variant="filled"
+                      value={ECCkey[key] || ''}
+                      type="string"
+                      name={key}
+                      label={key.slice(0,1).toUpperCase() + key.slice(1)}
+                      placeholder={key === 'k' ? 'Make sure this is a valid K' : 'abs, ord (Point must be on curve)'}
+                      onFocus={(e) => e.target.select()}
+                      onChange={handleChangeECCkey}
+                    />
+                  </FormControl>
+                );
+              })}
+            </>
+          )}
+          <div style={{ textAlign: 'center', fontSize: 12, margin: '-10px auto 20px' }}>
+            To make sure K and Base Point, Please check on the Generate Key section
+          </div>
+          <FormControl className="dropdown">
+            {!swap ? (
+              <TextField
+                variant="filled"
+                value={myKey?.private || ''}
+                type="string"
+                name='private'
+                label= 'Private Key'
+                placeholder={`separate with comma if multivalue`}
+                onFocus={(e) => e.target.select()}
+                onChange={handleChangeMyKey}
+              />
+            ) : (
+              <TextField
+                variant="filled"
+                value={myKey?.public}
+                type="string"
+                name='public'
+                label= 'Public Key'
+                placeholder={`separate with comma if multivalue`}
+                onFocus={(e) => e.target.select()}
+                onChange={handleChangeMyKey}
+                InputLabelProps={{ shrink: myKey?.public ? true : false }}
+              />
+            )}
+          </FormControl>
           <Button
             variant="contained"
             color="primary"
-            onClick={console.log}
+            onClick={swap ? () => encrypt() : () => decrypt()}
             size="large"
+            disabled={(cipher === 3 && ECCkey.p < 128) 
+              || !elGamalK 
+              || Object.keys(myKey).find(val => !val)
+            }
             className="submit-btn"
             startIcon={
               loading 

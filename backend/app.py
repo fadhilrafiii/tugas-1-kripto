@@ -25,8 +25,8 @@ from steganography.Audio import AudioSteganography
 
 # Import Public Key Algorithm
 from cipher.ECC import ECC
-from cipher.Elgamal import Elgamal
-from cipher.RSA import RSA
+from cipher.Elgamal import Elgamal, encrypt_Elgamal, decrypt_Elgamal
+from cipher.RSA import RSA, encrypt_RSA, decrypt_RSA
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -157,7 +157,6 @@ def generate_key():
   try:
     type = request.args.get('type')
     payload = request.json
-    print(payload)
 
     if (type == 'RSA'):
       a = RSA(payload['e'], payload['p'], payload['q'])
@@ -168,7 +167,7 @@ def generate_key():
     elif (type == 'Paillier'):
       pass
     elif (type == 'El-Gamal'):
-      a = Elgamal(payload['p'], payload['g'], payload['x'], payload['k'])
+      a = Elgamal(payload['p'], payload['g'], payload['x'])
       return jsonify({ 
         'public': a.generate_public_key(),
         'private': a.generate_private_key() 
@@ -186,7 +185,53 @@ def generate_key():
 
 @app.route('/public-key', methods=['POST'])
 def public_key():
-  pass
+  try:
+    method = request.args.get('method')
+    type = request.args.get('type')
+    payload = request.json
+
+    if (not (method == 'encrypt' or method == 'decrypt')):
+      return jsonify({ 'error': 'Method is not recognized!' }), 400
+
+    if (type == 'RSA'):
+      if (method == 'encrypt'):
+        return jsonify({ 
+          'data': encrypt_RSA(payload['plaintext'], payload['pubkey']),
+        })
+      else:
+        return jsonify({ 
+          'data': decrypt_RSA(payload['ciphertext'],  payload['prikey']),
+        })
+    elif (type == 'Paillier'):
+      pass
+    elif (type == 'El-Gamal'):
+      if (method == 'encrypt'):
+        pubkey = (payload['pubkey'][0], payload['pubkey'][1], payload['pubkey'][2])
+        return jsonify({ 
+          'data': encrypt_Elgamal(payload['plaintext'], payload['k'], pubkey),
+        })
+      else:
+        prikey = (payload['prikey'][0], payload['prikey'][1])
+        return jsonify({ 
+          'data': decrypt_Elgamal(payload['ciphertext'], prikey),
+        })
+    elif (type == 'ECC'):
+      a = ECC(payload['a'], payload['b'], payload['p'])
+      if (method == 'encrypt'):
+        pubkey = (payload['pubkey'][0], payload['pubkey'][1])
+        base_point = (payload['base_point'][0], payload['base_point'][1])
+        return jsonify({ 
+          'data': a.encrypt(payload['plaintext'], payload['k'], base_point, pubkey),
+        })
+      else:
+        prikey = (payload['prikey'][0], payload['prikey'][1])
+        return jsonify({ 
+          'data': a.decrypt(payload['ciphertext'], prikey),
+        })
+    else:
+      return jsonify({ 'error': 'Public key algorithm chosen is not recognized' }), 400
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
 
 if __name__ == '__main__':
   app.run(debug = True)

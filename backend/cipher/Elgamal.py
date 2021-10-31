@@ -38,6 +38,6 @@ class Elgamal:
 
 a = Elgamal(2357, 2, 1751, 1520)
 
-print(a.generate_public_key())
-print(a.generate_private_key())
-print(a.decrypt(a.encrypt([2035])))
+# print(a.generate_public_key())
+# print(a.generate_private_key())
+# print(a.decrypt(a.encrypt([2035])))

@@ -7,3 +7,23 @@ export const isPrime = (x) => {
 
   return true;
 }
+
+export const gcd = (a, b) => {
+  if ((typeof a !== 'number') || (typeof b !== 'number')) 
+    return false;
+  a = Math.abs(a);
+  b = Math.abs(b);
+  while(b) {
+    var t = b;
+    b = a % b;
+    a = t;
+  }
+  return a;
+
+}
+
+export const isCoprime = (a, b) => {
+  return new Promise((resolve) => {
+    resolve(gcd(a, b) === 1)
+  })
+}

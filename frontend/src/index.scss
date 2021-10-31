@@ -445,3 +445,20 @@ textarea {
 .steganography {
   position: relative;
 }
+
+.points-dropdown {
+  .MuiCircularProgress-root {
+    width: 16px !important;
+    height: 16px !important;
+    top: unset !important;
+    right: 15px !important;
+
+    svg {
+      color: $primary !important;
+    }
+  }
+}
+
+.warning-key {
+  color: $ternary;
+}

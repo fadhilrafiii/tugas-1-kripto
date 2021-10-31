@@ -1,3 +1,5 @@
+import math
+
 def print_cipher_opt():
   print("Masukkan algoritma cipher yang ingin dipilih: ")
   print("1. Standard Vigenere Cipher")
@@ -89,3 +91,33 @@ def power_mod(base, exponent, modulus):
     base = (base * base) % modulus
 
   return result;
+
+def point_add(P, Q, p, a):
+  if (P[0] == Q[0] and P[1] == Q[1]):
+    m = (3 * P[0] ** 2 + a) * mod_inv(2 * P[1], p) % p
+    if (P[1] == 0):
+      return (0, 0)
+  else:
+    if (P[0] < Q[0]):
+      m = (Q[1] - P[1]) * mod_inv(Q[0] - P[0], p) % p
+    elif (P[0] > Q[0]):
+      m = (P[1] - Q[1]) * mod_inv(P[0] - Q[0], p) % p
+    else:
+      return (0, 0)
+
+  x = (m ** 2 - P[0] - Q[0]) % p
+  y = (m * (P[0] - x) - P[1]) % p
+
+  return (x, y)
+
+def point_mult(k, P, p, a):
+  add = P
+  for i in range(k - 1):
+    add = point_add(add, P, p, a)
+
+  return add
+
+def point_subtract(P, Q, p, a):
+  Q = (Q[0], -1 * Q[1] % p)
+  
+  return point_add(P, Q, p, a)

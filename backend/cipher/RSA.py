@@ -38,7 +38,7 @@ class RSA:
 
     return dec
 
-a = RSA(853687,	853693,	853703)
-dec = a.encrypt('HOME')
-print(dec)
-print(a.decrypt(dec), 'decrypt')
+# a = RSA(853687,	853693,	853703)
+# dec = a.encrypt('HOME')
+# print(dec)
+# print(a.decrypt(dec), 'decrypt')

@@ -11,16 +11,22 @@ from google.cloud.storage import Bucket
 from utils.helper import *
 from utils.string import *
 
-# Import Algorithm
+# Import Classical Algorithm
 from cipher.vigenere import Vigenere
 from cipher.playfair import Playfair
 from cipher.affine import Affine
 from cipher.hill import Hill
 from cipher.rc4 import RC4
 
+# Import Stegano Algorithm
 from steganography.Video import VideoSteganography
 from steganography.Image import ImageSteganography
 from steganography.Audio import AudioSteganography
+
+# Import Public Key Algorithm
+from cipher.ECC import ECC
+from cipher.Elgamal import Elgamal
+from cipher.RSA import RSA
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -134,6 +140,53 @@ def steganography():
   value = stego.PSNR()
 
   return jsonify({ 'result': blob.public_url, 'value': value })
+
+@app.route('/available-ecc-points', methods=['POST'])
+def get_points():
+  try:
+    payload = request.json
+    if (payload['p'] > 2 ** 13):
+        return jsonify({ 'error': 'Too large value for P' }), 400
+    a = ECC(payload['a'], payload['b'], payload['p'])
+    return jsonify(a.get_points_ecc())
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
+
+@app.route('/generate-key', methods=['POST'])
+def generate_key():
+  try:
+    type = request.args.get('type')
+    payload = request.json
+    print(payload)
+
+    if (type == 'RSA'):
+      a = RSA(payload['e'], payload['p'], payload['q'])
+      return jsonify({ 
+        'public': a.generate_public_key(),
+        'private': a.generate_private_key() 
+      })
+    elif (type == 'Paillier'):
+      pass
+    elif (type == 'El-Gamal'):
+      a = Elgamal(payload['p'], payload['g'], payload['x'], payload['k'])
+      return jsonify({ 
+        'public': a.generate_public_key(),
+        'private': a.generate_private_key() 
+      })
+    elif (type == 'ECC'):
+      a = ECC(payload['a'], payload['b'], payload['p'])
+      return jsonify({ 
+        'public': a.generate_public_key(payload['P'], payload['m'])
+      })
+    else:
+      return jsonify({ 'error': 'Public key algorithm chosen is not recognized' }), 400
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
+
+
+@app.route('/public-key', methods=['POST'])
+def public_key():
+  pass
 
 if __name__ == '__main__':
   app.run(debug = True)

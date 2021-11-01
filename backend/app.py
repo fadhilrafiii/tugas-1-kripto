@@ -224,7 +224,7 @@ def public_key():
           'data': a.encrypt(payload['plaintext'], payload['k'], base_point, pubkey),
         })
       else:
-        prikey = (payload['prikey'][0], payload['prikey'][1])
+        prikey = payload['prikey']
         return jsonify({ 
           'data': a.decrypt(payload['ciphertext'], prikey),
         })

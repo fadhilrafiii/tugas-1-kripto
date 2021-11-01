@@ -49,8 +49,8 @@ class ECC:
       points = self.get_points_ecc()['points']
 
     decoded = {}
-    for i in range(128):
-      decoded[points[i]] = chr(i)
+    for i in range(len(points)):
+      decoded[points[i]] = chr(i % 128)
     
     return decoded
 
@@ -59,43 +59,43 @@ class ECC:
       points = self.get_points_ecc()['points']
 
     encoded = {}
-    for i in range(128):
-      encoded[chr(i)] = points[i]
+    for i in range(len(points)):
+      encoded[points[i]] = chr(i % 128)
     
     return encoded
 
   def encrypt(self, plaintext, k, P, pb):
-    print(plaintext, P, pb)
     encoded = self.get_encoded_char()
-    print(plaintext, P, pb)
 
     enc = {
       'text': '',
       'encoding': []
     }
     for char in plaintext:
-      print(char, P, pb)
       kb = point_mult(k, P, self.p, self.a)
       kP = point_mult(k, pb, self.p, self.a)
-      pc = (kb, point_add(encoded[char], kP, self.p, self.a))
+      pc = (kb, point_add(list(encoded.keys())[list(encoded.values()).index(char)], kP, self.p, self.a))
       enc['encoding'].append(pc)
-      enc['text'] += list(encoded.keys())[list(encoded.values()).index(pc[1])]
-  
+      enc['text'] += encoded[pc[1]]
+    
+    enc['text'] = list(map(ord, enc['text']))
     return enc
 
   def decrypt(self, cipher_encoded, b):
+    if (isinstance(cipher_encoded, str)):
+      cipher = cipher_encoded.split(' ')
+      cipher_encoded = []
+      for cip in cipher:
+        c = list(map(int, cip.split(',')))
+        cipher_encoded.append(((c[0], c[1]), (c[2], c[3])))
+
     decoded = self.get_decoded_char()
 
     dec = ''
     for enc in cipher_encoded:
+
       bkb = point_mult(b, enc[0], self.p, self.a)
       d = point_subtract(enc[1], bkb, self.p, self.a)
       dec += decoded[d]
 
     return dec
-
-a = ECC(1, 1, 1021)
-# enc = a.encrypt('AYAM', 3, (0, 1), point_mult(2, (0, 1), 1021, 1))
-# dec = a.decrypt(enc['encoding'], 2)
-# print('DEC:', dec)
-a.get_points_ecc()

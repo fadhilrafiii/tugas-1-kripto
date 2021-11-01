@@ -11,6 +11,7 @@ export const PairTextArea = ({
   result,
   onSwap,
   onDownload,
+  customPlaceholder = ''
 }) => {
   const [file, setFile] = useState(null);
 
@@ -61,6 +62,7 @@ export const PairTextArea = ({
           minRows={12}
           maxRows={12}
           autoFocus
+          placeholder={customPlaceholder}
         />
         {file?.name && (
           <div className="error mb">{`You uploaded ${file.name}!`}</div>

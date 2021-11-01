@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200;400;500;600;800&display=swap");
 
 $primary: #265158;
 $secondary: #9fddd2;
@@ -127,6 +128,10 @@ html {
   background-color: $secondary;
 }
 
+pre { 
+  font-family: monospace !important;
+}
+
 .preview-media {
   max-width: 100%;
 
@@ -203,7 +208,6 @@ html {
   width: 100%;
   border-radius: 4px !important;
   background-color: white;
-
   input {
     background-color: white !important;
   }
@@ -223,6 +227,14 @@ html {
     input {
       min-width: 300px;
     }
+  }
+}
+
+.show-encoding {
+  color: $primary;
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 }
 

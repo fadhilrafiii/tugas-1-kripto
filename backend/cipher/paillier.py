@@ -2,7 +2,6 @@ import math
 import random
 import os, sys
 sys.path.insert(0, os.path.abspath(".."))
-from utils.helper import mod_inv
 
 class Paillier:
     def __init__(self, p, q, g):
@@ -69,7 +68,7 @@ class Paillier:
             print(m)
             dec += chr(m)
 
-    def encrypt_pailler(plaintext, pub_key = None):
+    def encrypt_paillier(plaintext, pub_key = None):
         enc = []
         r = Paillier.generate_r(pub_key[1])
         print('r : ', r)
@@ -82,7 +81,7 @@ class Paillier:
 
         return enc
     
-    def decrypt_pailler(ciphertext, pub_key = None, pri_key = None):
+    def decrypt_paillier(ciphertext, pub_key = None, pri_key = None):
         if (isinstance(ciphertext, str)):
             ciphertext = map(int, ciphertext.split(' '))
 
@@ -108,9 +107,9 @@ class Paillier:
 #a = Paillier(7,11,5652)
 #print(a.generate_public_key())
 #print(a.generate_private_key())
-x = Paillier.encrypt_pailler('*123#', (5652, 77))
+x = Paillier.encrypt_paillier('*123#', (5652, 77))
 print(x)
-print(Paillier.decrypt_pailler(x, (5652, 77), (30, 74)))
+print(Paillier.decrypt_paillier(x, (5652, 77), (30, 74)))
 
 
 

@@ -27,6 +27,7 @@ from steganography.Audio import AudioSteganography
 from cipher.ECC import ECC
 from cipher.Elgamal import Elgamal, encrypt_Elgamal, decrypt_Elgamal
 from cipher.RSA import RSA, encrypt_RSA, decrypt_RSA
+from cipher.Paillier import Paillier
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -165,7 +166,11 @@ def generate_key():
         'private': a.generate_private_key() 
       })
     elif (type == 'Paillier'):
-      pass
+      a = Paillier(payload['p'], payload['q'], payload['g'])
+      return jsonify({
+        'public': a.generate_public_key(),
+        'private': a.generate_private_key() 
+      })
     elif (type == 'El-Gamal'):
       a = Elgamal(payload['p'], payload['g'], payload['x'])
       return jsonify({ 
@@ -203,7 +208,14 @@ def public_key():
           'data': decrypt_RSA(payload['ciphertext'],  payload['prikey']),
         })
     elif (type == 'Paillier'):
-      pass
+      if (method == 'encrypt'):
+        return jsonify({ 
+          'data': Paillier.encrypt_paillier(payload['plaintext'], payload['pubkey']),
+        })
+      else:
+        return jsonify({ 
+          'data': Paillier.decrypt_paillier(payload['ciphertext'], payload['pubkey'], payload['prikey']),
+        })
     elif (type == 'El-Gamal'):
       if (method == 'encrypt'):
         pubkey = (payload['pubkey'][0], payload['pubkey'][1], payload['pubkey'][2])

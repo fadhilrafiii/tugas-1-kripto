@@ -121,7 +121,11 @@ function Cryptography() {
       });
     }
     else if (e.target.value === 1) {
-      setCipherKey({})
+      setCipherKey({
+        p: 7,
+        q: 11,
+        g: 5652,
+      })
     }
     else if (e.target.value === 2) {
       setCipherKey({
@@ -239,6 +243,11 @@ function Cryptography() {
       if (!isCoprimePPsi) return setErrorKey(`E should be coprime with Psi = ${psi}`);
       const isCoprimeEPQ = await isCoprime(e, p * q)
       if (!isCoprimeEPQ) return setErrorKey(`E should be coprime with P*Q = ${p*q}`);
+    }
+    else if (cipher === 1){
+      const{ p, q, g } = cipherKey;
+      const n = p * q;
+      if (g > n*n) return setErrorKey('g should be lower than n^2!')
     }
     else if (cipher === 2) {
       const { p, g, x} = cipherKey;
@@ -399,14 +408,20 @@ function Cryptography() {
       method: 'decrypt'
     });
     let priv = myKey.private;
+    let pub = myKey.public;
     if (cipher === 0 || cipher === 2) {
       priv = priv.split(',').map((val) => parseInt(val.trim()))
+    }
+    if (cipher === 1) {
+      priv = priv.split(',').map((val) => parseInt(val.trim()))
+      pub = pub.toString().split(',').map((val) => parseInt(val.trim()))
     }
     else if (cipher === 3) {
       priv = parseInt(priv)
     }
     const payload = {
       prikey: priv,
+      pubkey: pub,
       ciphertext: data
     };
 

@@ -89,27 +89,20 @@ class Paillier:
         dec = ''
 
         for c in ciphertext:
-            print('lamda, ', pri_key[0])
-            print('miu, ', pri_key[1])
-            print('cccc', c)
             z = pow(c, pri_key[0]) % (pub_key[1] * pub_key[1])
-            print('zzz', z)
             x = (z-1)/ pub_key[1]
-            print('x nih ', x)
             m = (x*pri_key[1]) % pub_key[1]
-            print(m)
             m = int(m)
             dec += chr(m)
-            print('dec ', dec)
 
         return dec
 
 #a = Paillier(7,11,5652)
 #print(a.generate_public_key())
 #print(a.generate_private_key())
-x = Paillier.encrypt_paillier('*123#', (5652, 77))
-print(x)
-print(Paillier.decrypt_paillier(x, (5652, 77), (30, 74)))
+#x = Paillier.encrypt_paillier('*123#', (5652, 77))
+#print(x)
+#print(Paillier.decrypt_paillier(x, (5652, 77), (30, 74)))
 
 
 

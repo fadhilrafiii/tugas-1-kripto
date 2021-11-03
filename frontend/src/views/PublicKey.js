@@ -408,14 +408,20 @@ function Cryptography() {
       method: 'decrypt'
     });
     let priv = myKey.private;
-    if (cipher === 0 || cipher === 1 || cipher === 2) {
+    let pub = myKey.public;
+    if (cipher === 0 || cipher === 2) {
       priv = priv.split(',').map((val) => parseInt(val.trim()))
+    }
+    if (cipher === 1) {
+      priv = priv.split(',').map((val) => parseInt(val.trim()))
+      pub = pub.toString().split(',').map((val) => parseInt(val.trim()))
     }
     else if (cipher === 3) {
       priv = parseInt(priv)
     }
     const payload = {
       prikey: priv,
+      pubkey: pub,
       ciphertext: data
     };
 
@@ -807,7 +813,7 @@ function Cryptography() {
             disabled={Boolean((cipher === 2 && !elGamalK) 
               || (swap ? !myKey.public : !myKey.private)
               || (cipher === 3 && Object.keys(ECCkey).find(key => !ECCkey[key]))
-              || !(cipher || cipher === 0)
+              || !(cipher || cipher === 0 || cipher === 1)
             )}
             className="submit-btn"
             startIcon={

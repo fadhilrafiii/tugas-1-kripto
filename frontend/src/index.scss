@@ -242,6 +242,11 @@ pre {
   background-color: transparent !important;
 }
 
+.MuiGrid-item {
+  display: flex;
+  justify-content: center;
+}
+
 .cryptography {
   position: relative;
 

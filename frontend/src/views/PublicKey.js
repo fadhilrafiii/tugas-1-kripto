@@ -450,7 +450,11 @@ function Cryptography() {
     setECCkey((prev) => ({
       ...prev,
       [name]: value
-    }))
+    }));
+
+    if ((name === 'a' || name === 'b' || name === 'p') && cipher === 3) {
+      setCipherKey((prev) => ({ ...prev, [name]: parseInt(value) }));
+    }
   }
 
   useEffect(() => {
@@ -797,7 +801,7 @@ function Cryptography() {
             size="large"
             disabled={Boolean((cipher === 2 && !elGamalK) 
               || (swap ? !myKey.public : !myKey.private)
-              || (cipher === 3 && Object.keys(ECCkey).find(key => !ECCkey[key]))
+              || (cipher === 3 && (Object.keys(ECCkey).find(key => !ECCkey[key]) || eccPoints.count < 128))
               || !(cipher || cipher === 0)
             )}
             className="submit-btn"

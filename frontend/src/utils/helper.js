@@ -22,8 +22,27 @@ export const gcd = (a, b) => {
 
 }
 
-export const isCoprime = (a, b) => {
-  return new Promise((resolve) => {
-    resolve(gcd(a, b) === 1)
-  })
+export const isCoprime = (x, y) => {
+  try {
+    let a = parseInt(x);
+    let b = parseInt(y);
+
+    if (isNaN(a)) throw new Error(`${x} is not a number!`);
+    if (isNaN(b)) throw new Error(`${y} is not a number!`);
+    return new Promise((resolve) => {
+     resolve(gcd(a, b) === 1);
+    });
+  } catch (err) {
+    alert(err || 'Error has occured!')
+  }
 }
+
+export const downloadTxtFile = (content) => {
+  const element = document.createElement("a");
+  const file = new Blob([content], { type: "text/plain" });
+  element.href = URL.createObjectURL(file);
+  const fileName = prompt('Give filename to downloaded file: ')
+  element.download = `${fileName}.txt`;
+  document.body.appendChild(element); // Required for this to work in FireFox
+  element.click();
+};

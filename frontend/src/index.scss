@@ -10,11 +10,11 @@ $shadow: rgba(0, 0, 0, 0.25);
   margin: 0;
   box-sizing: border-box;
   font-family: Poppins !important;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 html {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .header {
@@ -480,4 +480,34 @@ textarea {
 .warning-key {
   color: $ternary;
   text-align: center;
+}
+
+.digital-sign {
+  position: relative;
+  background-color: $secondary;
+  padding: 100px clamp(15px, 5vw, 80px) 60px;
+  min-height: 100vh;
+
+  .title-page {
+    margin-bottom: 5px;
+  }
+  .subtitle {
+    margin: 0 auto;
+    text-align: center;
+    margin-bottom: 20px;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  .tab-container {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto 30px !important;
+  }
+  
+  .MuiTabPanel-root {
+    padding: 24px 12px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 }

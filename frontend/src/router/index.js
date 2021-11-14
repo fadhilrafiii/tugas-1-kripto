@@ -11,6 +11,7 @@ const NotFound = React.lazy(() => import("views/NotFound"));
 const RC4 = React.lazy(() => import("views/RC4"));
 const Steganography = React.lazy(() => import("views/Steganography"));
 const PublicKey = React.lazy(() => import("views/PublicKey"));
+const DigitalSign = React.lazy(() => import("views/DigitalSign"));
 
 const RouterPath = () => (
   <Router history={browserHistory}>
@@ -21,6 +22,7 @@ const RouterPath = () => (
         <Route path={routes.rc4} component={RC4} exact />
         <Route path={routes.steganography} component={Steganography} exact />
         <Route path={routes.publicKey} component={PublicKey} exact />
+        <Route path={routes.digitalSign} component={DigitalSign} exact />
         <Route component={NotFound} />
       </Switch>
     </LastLocationProvider>

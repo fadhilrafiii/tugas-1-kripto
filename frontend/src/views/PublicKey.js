@@ -21,7 +21,7 @@ import { PairTextArea, Alert } from "components";
 import { API_URL } from "constant";
 
 // IMPORT UTILS
-import { isLongInteger, isPrime, isCoprime } from 'utils/helper'; 
+import { isLongInteger, isPrime, isCoprime, downloadTxtFile } from 'utils/helper'; 
 
 function Cryptography() {
   const cipherOpt = [
@@ -209,16 +209,6 @@ function Cryptography() {
       });
   }
 
-  const downloadTxtFile = (content = result) => {
-    const element = document.createElement("a");
-    const file = new Blob([content], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    const fileName = prompt('Give filename to downloaded file: ')
-    element.download = `${fileName}.txt`;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  };
-
   useEffect(() => {
     if (successMessage || errorMessage) {
       setTimeout(() => {
@@ -237,6 +227,7 @@ function Cryptography() {
       if (!isPrime(p)) return setErrorKey('P should be prime number!')
       if (!isPrime(q)) return setErrorKey('Q should be prime number!')
       const isCoprimePQ = await isCoprime(p, q);
+      console.log('isCoprimePQ', isCoprimePQ);
       if (!isCoprimePQ) return setErrorKey('P & Q should be coprime!');
       if (e < 1 || e > psi) return setErrorKey(`E should be between 1 and Psi = ${psi}`)
       const isCoprimePPsi = await isCoprime(e, psi);

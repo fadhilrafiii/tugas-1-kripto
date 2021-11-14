@@ -160,7 +160,7 @@ def generate_key():
     payload = request.json
 
     if (type == 'RSA'):
-      a = RSA(payload['e'], payload['p'], payload['q'])
+      a = RSA(int(payload['e']), int(payload['p']), int(payload['q']))
       return jsonify({ 
         'public': a.generate_public_key(),
         'private': a.generate_private_key() 

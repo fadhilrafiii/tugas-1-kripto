@@ -17,6 +17,10 @@ const MenuList = [
     route: "/public-key",
     text: "Public Key",
   },
+  {
+    route: "/digital-sign",
+    text: "Digital Sign",
+  },
 ];
 
 export const Navbar = () => {

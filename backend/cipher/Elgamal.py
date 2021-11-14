@@ -71,7 +71,7 @@ def decrypt_Elgamal(cipher, private_key):
 # print(a.encrypt([2035]))
 # print(a.decrypt(a.encrypt([2035])))
 
-print('-----------------------------------')
+# print('-----------------------------------')
 
-print(encrypt_Elgamal('ayam', 1520, (1185, 2, 2357)))
-print(decrypt_Elgamal(encrypt_Elgamal('ayam', 1520, (1185, 2, 2357)), (1751, 2357)))
+# print(encrypt_Elgamal('ayam', 1520, (1185, 2, 2357)))
+# print(decrypt_Elgamal(encrypt_Elgamal('ayam', 1520, (1185, 2, 2357)), (1751, 2357)))

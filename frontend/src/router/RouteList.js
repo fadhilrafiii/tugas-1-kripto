@@ -3,5 +3,6 @@ export const routes = {
   classic: "/classic",
   rc4: "/rc4",
   steganography: "/steganography",
-  publicKey: "/public-key"
+  publicKey: "/public-key",
+  digitalSign: "/digital-sign",
 };

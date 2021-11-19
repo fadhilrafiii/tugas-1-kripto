@@ -485,7 +485,7 @@ textarea {
 .digital-sign {
   position: relative;
   background-color: $secondary;
-  padding: 100px clamp(15px, 5vw, 80px) 60px;
+  padding: 100px clamp(15px, 4vw, 60px) 60px;
   min-height: 100vh;
 
   .title-page {
@@ -496,7 +496,7 @@ textarea {
     text-align: center;
     margin-bottom: 20px;
     color: $primary;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .tab-container {
@@ -510,4 +510,31 @@ textarea {
     max-width: 1000px;
     margin: 0 auto;
   }
+}
+
+.file-name {
+  text-decoration: underline;
+  color: $primary;
+}
+
+.icon {
+  color: $primary;
+  width: .75em !important;
+}
+
+.input-file-label {
+  font-size: 14px;
+  display: inline-block;
+  color: $primary;
+  font-weight: 600;
+  transition: all .5s;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.fullwidth {
+  width: 100%;
 }

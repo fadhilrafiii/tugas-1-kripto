@@ -4,6 +4,8 @@ import { TabContext, TabPanel } from '@material-ui/lab';
 import { Alert } from 'components';
 
 import GenerateKey from './GenerateKey';
+import GenerateSign from './GenerateSign';
+import VerifySign from './VerifySign';
 
 const DigitalSign = () => {
   const [successMessage, setSuccessMessage] = useState('');
@@ -11,6 +13,7 @@ const DigitalSign = () => {
   const [tab, setTab] = useState("0");
   const tabList = useMemo(() => ['Generate Key', 'Generate Sign', 'Verify Sign'], []);
   const handleChangeTab = (e, val) => setTab(val);
+
   return (
     <>
       <Alert
@@ -35,7 +38,6 @@ const DigitalSign = () => {
               }}
               variant="scrollable"
               scrollButtons="auto"
-              allowScrollButtonsMobile
             >
               {tabList.map((t, idx) => (
                 <Tab key={t} label={t} value={idx.toString()} />
@@ -47,10 +49,10 @@ const DigitalSign = () => {
             <GenerateKey setSuccess={setSuccessMessage} setError={setErrorMessage} />
           </TabPanel>
           <TabPanel value="1">
-            Generate Sign
+            <GenerateSign setSuccess={setSuccessMessage} setError={setErrorMessage} />
           </TabPanel>
           <TabPanel value="2">
-            Verify Sign
+            <VerifySign setSuccess={setSuccessMessage} setError={setErrorMessage} />
           </TabPanel>
         </TabContext>
       

@@ -1,8 +1,14 @@
 // IMPORT MODULES
-import React from "react";
+import React, { useEffect } from "react";
 import MaterialAlert from "@material-ui/lab/Alert";
 
-export const Alert = ({ type, message, setMessage }) => {
+export const Alert = ({ type, message, setMessage, timeout = 3000 }) => {
+  useEffect(() => {
+    if (timeout > 0) {
+      if (message) setTimeout(() => setMessage(), timeout);
+    }
+  }, [message, timeout, setMessage]);
+
   return (
     message && (
       <MaterialAlert

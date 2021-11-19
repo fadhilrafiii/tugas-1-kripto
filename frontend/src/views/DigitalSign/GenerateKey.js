@@ -42,7 +42,6 @@ const GenerateKey = ({ setSuccess, setError }) => {
   const generateErrorKey = useCallback(async () => {
     const { e, p, q } = rsaKey;
     const psi = (p - 1) * (q - 1);
-    console.log(e, p, q)
     if (p && !isPrime(p)) return setErrorKey('P should be prime number!')
     if (q && !isPrime(q)) return setErrorKey('Q should be prime number!')
     if (p && q) {

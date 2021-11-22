@@ -36,7 +36,7 @@ const GenerateKey = ({ setSuccess, setError }) => {
   };
 
   const isButtonDisabled = () => {
-    return Object.keys(rsaKey).find((key) => !key);
+    return Object.keys(rsaKey).find((key) => !key) && !errorKey;
   };
 
   const generateErrorKey = useCallback(async () => {

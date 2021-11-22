@@ -538,3 +538,29 @@ textarea {
 .fullwidth {
   width: 100% !important;
 }
+
+.delete-file {
+  &-button {
+    padding: 8px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:first-child {
+      transition: all .2s;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &-icon {
+    color: $primary;
+    transition: all .2s !important;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

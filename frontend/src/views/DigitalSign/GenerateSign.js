@@ -11,15 +11,17 @@ import { InsertDriveFile, Close, Create } from "@material-ui/icons";
 
 import axios from 'axios';
 import { API_URL } from 'constant';
+import { downloadTxtFile } from 'utils/helper';
 
 const GenerateSign = ({ setSuccess, setError }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState("");
   const [file, setFile] = useState(null);
-  const [publicKey, setPrivateKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
   const [errorOccurance, setErrorOccurance] = useState(0);
   const [isDisabled, setDisabled] = useState(true);
   const [errorKey, setErrorKey] = useState("");
+  const [result, setResult] = useState("");
 
   const onInputFile = (e) => {
     if (e.target.files.length) {
@@ -41,13 +43,17 @@ const GenerateSign = ({ setSuccess, setError }) => {
 
   const onSign = async () => {
     await axios
-      .post(`${API_URL}/digital-sign`, {'message': data, 'prikey': publicKey})
+      .post(`${API_URL}/digital-sign`, {'message': data, 'prikey': privateKey.split(',').map(key => parseInt(key.trim()))})
       .then((res) => {
         setLoading(false);
-        setData(res.data.data);
+        setResult(res.data.data);
+        setSuccess('Digital Sign success!');
       })
       .catch((err) => {
         setLoading(false);
+        setError(err.response?.data?.error
+          ? err.response?.data?.error.split('"')[1] || err.response?.data?.error
+          : "Digital Sign failed!");
       });
   };
 
@@ -57,7 +63,7 @@ const GenerateSign = ({ setSuccess, setError }) => {
 
   const validateKeyFormat = useCallback(() => {
     try {
-      const splittedKey = publicKey.split(",");
+      const splittedKey = privateKey.split(",");
       splittedKey.forEach((k) => {
         if (!parseInt(k.trim()))
           throw new Error("There is invalid key components!");
@@ -69,21 +75,21 @@ const GenerateSign = ({ setSuccess, setError }) => {
       setError(err?.message || "Wrong key format!");
       return false;
     }
-  }, [publicKey, setError]);
+  }, [privateKey, setError]);
 
   const setButtonDisabled = useCallback(() => {
-    if (data || publicKey) {
-      setDisabled(!(data && publicKey && validateKeyFormat()));
+    if (data || privateKey) {
+      setDisabled(!(data && privateKey && validateKeyFormat()));
     } else setDisabled(true);
-  }, [data, publicKey, setDisabled, validateKeyFormat]);
+  }, [data, privateKey, setDisabled, validateKeyFormat]);
 
   const generateErrorKey = useCallback(() => {
-    if (!publicKey) return setErrorKey("Private key is still empty!");
-    if (!validateKeyFormat(publicKey))
+    if (!privateKey) return setErrorKey("Private key is still empty!");
+    if (!validateKeyFormat(privateKey))
       return setErrorKey("Invalid public key format!");
 
     return setErrorKey("");
-  }, [publicKey, validateKeyFormat]);
+  }, [privateKey, validateKeyFormat]);
 
   useEffect(() => {
     const checkButtonDisabled = setTimeout(() => setButtonDisabled(), 1500);
@@ -124,12 +130,12 @@ const GenerateSign = ({ setSuccess, setError }) => {
               />
               <label htmlFor="raised-button-file">
                 {file ? (
-                  <Grid container spacing={1}>
+                  <Grid container spacing={1} className="delete-file-button">
                     <Grid item className="file-name">
                       {file?.name}
                     </Grid>
                     <Grid item>
-                      <Close onClick={onDeleteFile} />
+                      <Close onClick={onDeleteFile} className="delete-file-icon" />
                     </Grid>
                   </Grid>
                 ) : (
@@ -155,7 +161,7 @@ const GenerateSign = ({ setSuccess, setError }) => {
                 <TextField
                   style={{ background: "white", borderRadius: "6px 6px 0 0" }}
                   variant="filled"
-                  value={publicKey}
+                  value={privateKey}
                   label="Private Key"
                   name="public"
                   placeholder="Separate with comma"
@@ -189,6 +195,11 @@ const GenerateSign = ({ setSuccess, setError }) => {
       >
         ADD SIGN
       </Button>
+      {result && (
+        <div className="download" onClick={() => downloadTxtFile(result)}>
+          Download signed text in .txt
+        </div>
+      )}
     </Grid>
   );
 };

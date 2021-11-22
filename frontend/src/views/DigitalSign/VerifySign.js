@@ -17,7 +17,6 @@ const GenerateSign = ({ setSuccess, setError }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState("");
   const [file, setFile] = useState(null);
-  const [sign, setSign] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [errorOccurance, setErrorOccurance] = useState(0);
   const [isDisabled, setDisabled] = useState(true);
@@ -41,15 +40,16 @@ const GenerateSign = ({ setSuccess, setError }) => {
     setFile(null);
   };
 
-  const onSign = async () => {
+  const onVerify = async () => {
     await axios
-      .post(`${API_URL}/verify-sign`, {'message': data, 'pubkey': publicKey})
+      .post(`${API_URL}/verify-sign`, {'message': data, 'pubkey': publicKey.split(',').map(key => parseInt(key.trim()))})
       .then((res) => {
         setLoading(false);
-        console.log(res.data)
+        setSuccess(res.data.data);
       })
       .catch((err) => {
         setLoading(false);
+        setError(err.response?.data?.data);
       });
   };
 
@@ -74,10 +74,10 @@ const GenerateSign = ({ setSuccess, setError }) => {
   }, [publicKey, setError]);
 
   const setButtonDisabled = useCallback(() => {
-    if (data || publicKey || sign) {
-      setDisabled(!(data && publicKey && sign && validateKeyFormat()));
+    if (data || publicKey) {
+      setDisabled(!(data && publicKey && validateKeyFormat()));
     } else setDisabled(true);
-  }, [sign, data, publicKey, setDisabled, validateKeyFormat]);
+  }, [data, publicKey, setDisabled, validateKeyFormat]);
 
   const generateErrorKey = useCallback(() => {
     if (!publicKey) return setErrorKey("Public key is still empty!");
@@ -126,12 +126,12 @@ const GenerateSign = ({ setSuccess, setError }) => {
               />
               <label htmlFor="raised-button-file">
                 {file ? (
-                  <Grid container spacing={1}>
+                  <Grid container spacing={1} className="delete-file-button">
                     <Grid item className="file-name">
                       {file?.name}
                     </Grid>
                     <Grid item>
-                      <Close onClick={onDeleteFile} />
+                      <Close onClick={onDeleteFile} className="delete-file-icon" />
                     </Grid>
                   </Grid>
                 ) : (
@@ -150,26 +150,6 @@ const GenerateSign = ({ setSuccess, setError }) => {
           </div>
         </Grid>
         <Grid container item md={4} direction="column">
-          <h3 className="subtitle">Sign</h3>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item md={12}>
-              <FormControl className="dropdown fullwidth">
-                <TextField
-                  style={{ background: "white", borderRadius: "6px 6px 0 0" }}
-                  variant="filled"
-                  value={sign}
-                  label="Sign"
-                  fullWidth
-                  placeholder="Input sign to verify"
-                  onFocus={(e) => e.target.select()}
-                  onChange={(e) => setSign(e.target.value)}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-          <div className="error-key">
-            {errorOccurance && !sign ? "Sign is still empty!" : <br />}
-          </div>
           <h3 className="subtitle">Input Key</h3>
           <Grid container spacing={2} justifyContent="center">
             <Grid item md={12}>
@@ -196,7 +176,7 @@ const GenerateSign = ({ setSuccess, setError }) => {
         variant="contained"
         color="primary"
         disabled={isDisabled}
-        onClick={onSign}
+        onClick={onVerify}
         size="large"
         className="submit-btn"
         startIcon={

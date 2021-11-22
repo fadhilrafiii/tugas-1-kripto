@@ -253,7 +253,7 @@ def digital_sign():
     sha = SHA256(payload['message'])
     plaintext = hex_to_string(sha.result)
     
-    prikey = list(map(int, payload['prikey'].split(', ')))
+    prikey = payload['prikey']
     text = decrypt_RSA(plaintext, prikey, True)
     # print(text)
     sign = string_to_hex(text)
@@ -269,19 +269,18 @@ def verify_sign():
   try:
     payload = request.json # message+sign, pubkey
     split1 = payload['message'].split('\n<ds>')
-    message = '\n<ds>'.join(split1[:-1])
-    sign = split1[len(split1)-1][:-5]
+    message = '\n<ds>'.join(split1[:-1]).strip()
+    sign = split1[len(split1)-1][:-5].strip()
 
     sha = SHA256(message)
     plaintext = hex_to_string(sha.result)
     text = hex_to_string(sign)
-    pubkey = list(map(int, payload['pubkey'].split(', ')))
-    # print(text)
+    pubkey = payload['pubkey']
+
     text1 = encrypt_RSA(plaintext, pubkey, True)
-    # print(text1)
     if (text == text1):
-      return jsonify({ 'data': 'Message valid', 'comparable0': text, 'comparable1': text1})
-    return jsonify({ 'data': 'Message invalid', 'comparable0': text, 'comparable1': text1})
+      return jsonify({ 'data': 'Sign Verified!', 'comparable0': text, 'comparable1': text1})
+    return jsonify({ 'data': 'Sign Unverified!', 'comparable0': text, 'comparable1': text1}), 400
 
   except Exception as err:
     return jsonify({ 'error': str(repr(err))}), 400

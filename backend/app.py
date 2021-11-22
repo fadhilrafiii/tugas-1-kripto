@@ -26,8 +26,9 @@ from steganography.Audio import AudioSteganography
 # Import Public Key Algorithm
 from cipher.ECC import ECC
 from cipher.Elgamal import Elgamal, encrypt_Elgamal, decrypt_Elgamal
-from cipher.RSA import RSA, encrypt_RSA, decrypt_RSA
+from cipher.RSA import *
 from cipher.paillier import Paillier
+from cipher.SHA256 import SHA256
 
 # CWD in backend
 from constants import TEMPORARY_INPUT_DIR, TEMPORARY_OUTPUT_DIR
@@ -244,6 +245,47 @@ def public_key():
       return jsonify({ 'error': 'Public key algorithm chosen is not recognized' }), 400
   except Exception as err:
     return jsonify({ 'error': str(repr(err))}), 400
+
+@app.route('/digital-sign', methods=['POST'])
+def digital_sign():
+  try:
+    payload = request.json
+    sha = SHA256(payload['message'])
+    plaintext = hex_to_string(sha.result)
+    
+    prikey = list(map(int, payload['prikey'].split(', ')))
+    text = decrypt_RSA(plaintext, prikey, True)
+    # print(text)
+    sign = string_to_hex(text)
+    
+    return jsonify({'data': payload['message'] + '\n<ds>' + sign + '<\ds>'})
+
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
+
+
+@app.route('/verify-sign', methods=['POST'])
+def verify_sign():
+  try:
+    payload = request.json # message+sign, pubkey
+    split1 = payload['message'].split('\n<ds>')
+    message = '\n<ds>'.join(split1[:-1])
+    sign = split1[len(split1)-1][:-5]
+
+    sha = SHA256(message)
+    plaintext = hex_to_string(sha.result)
+    text = hex_to_string(sign)
+    pubkey = list(map(int, payload['pubkey'].split(', ')))
+    # print(text)
+    text1 = encrypt_RSA(plaintext, pubkey, True)
+    # print(text1)
+    if (text == text1):
+      return jsonify({ 'data': 'Message valid', 'comparable0': text, 'comparable1': text1})
+    return jsonify({ 'data': 'Message invalid', 'comparable0': text, 'comparable1': text1})
+
+  except Exception as err:
+    return jsonify({ 'error': str(repr(err))}), 400
+
 
 if __name__ == '__main__':
   app.run(debug = True)

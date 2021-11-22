@@ -9,6 +9,9 @@ import {
 } from "@material-ui/core";
 import { InsertDriveFile, Close, Create } from "@material-ui/icons";
 
+import axios from 'axios';
+import { API_URL } from 'constant';
+
 const GenerateSign = ({ setSuccess, setError }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState("");
@@ -36,10 +39,16 @@ const GenerateSign = ({ setSuccess, setError }) => {
     setFile(null);
   };
 
-  const onSign = () => {
-    setLoading(false);
-    console.log("SIGNING...");
-    setLoading(true);
+  const onSign = async () => {
+    await axios
+      .post(`${API_URL}/digital-sign`, {'message': data, 'prikey': publicKey})
+      .then((res) => {
+        setLoading(false);
+        setData(res.data.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
   };
 
   const onChangeKey = (e) => {

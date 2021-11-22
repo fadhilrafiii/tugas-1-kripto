@@ -121,7 +121,7 @@ class SHA256:
 
       self.k = [floatToBits(primes[i] ** (1.0/3.0) % 1.0) for i in range (64)]
 
-'''
+
 halo = SHA256("the quick brown fox jumps over the lazy dog")
 print(halo.result)
 halo = SHA256("The quick brown fox jumps over the lazy dog")
@@ -130,4 +130,3 @@ halo = SHA256("lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vo
 print(halo.result)
 halo = SHA256("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec volutpat nulla in sapien pulvinar mattis. Integer eget nunc maximus metus finibus elementum vel eu mi. Integer sollicitudin, erat at condimentum mollis, urna est ullamcorper nulla, et imperdiet tortor dui non ipsum. Nulla ultricies venenatis velit ut aliquam. Nunc tincidunt tempor urna, non placerat ex dictum sed. Quisque sem sapien, feugiat sit amet auctor eget, convallis eget justo. Nunc non magna nibh. Suspendisse imperdiet, nisl porta vulputate auctor, tellus felis sollicitudin purus, in maximus ex est non lorem.")
 print(halo.result)
-'''

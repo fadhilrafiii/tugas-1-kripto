@@ -48,19 +48,34 @@ def encrypt_RSA(plaintext, pub_key, isSign = False):
     return ''.join(list(map(chr, enc)))
   return enc
 
-def hex_to_string(text):
+def hex_to_string(text, maxval):
+  maxval -= 1
+  nbdigit = 0
+  while(maxval > 0):
+    nbdigit += 1
+    maxval //= 16
+
   plaintext = []
-  for i in range(len(text) // 2):
-    toInt = text[2*i] + text[2*i+1]
+  for i in range(len(text) // nbdigit):
+    toInt = text[nbdigit*i: nbdigit*(i+1)]
     toChar = int(toInt, 16)
     plaintext.append(chr(toChar))
   return ''.join(plaintext)
 
-def string_to_hex(text):
+def string_to_hex(text, maxval):
+  maxval -= 1
+  nbdigit = 0
+  while(maxval > 0):
+    nbdigit += 1
+    maxval //= 16
   ret = ""
   for i in range(len(text)):
-    ret += hex(ord(text[i]) // 16)[2:]
-    ret += hex(ord(text[i]) % 16)[2:]
+    o = ord(text[i])
+    toAdd = ""
+    for j in range(nbdigit):
+      toAdd = hex(o % 16)[2:] + toAdd
+      o //= 16
+    ret += toAdd
   return ret
 
 def decrypt_RSA(ciphertext, pri_key, isSigning = False):
